@@ -1,9 +1,9 @@
 import { Cog8ToothIcon } from '@heroicons/react/24/outline';
-import  IconButton  from '../IconButton';
+import  IconButton  from '../buttons/IconButton';
 
 export default function Header() {
     return (
-        <header className="flex px-2 items-center mb-4 md:mb-5 lg:mb-6 md:py-4 lg:py-5 py-3 shadow dark:shadow-lg justify-between">
+        <header className="flex px-2 items-center mb-6 md:mb-7 lg:mb-8 md:py-4 lg:py-5 py-3 shadow dark:shadow-lg justify-between">
             <h1 className="font-serif text-xl font-bold text-slate-300">
                 Gaps Learning Timer
             </h1>

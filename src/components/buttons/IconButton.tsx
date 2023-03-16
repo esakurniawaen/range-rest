@@ -2,12 +2,12 @@ import { type ReactElement } from 'react';
 import clsx from 'clsx';
 
 type IconButtonProps = {
-    variant?: 'solid' | 'outline';
+    variant: 'solid' | 'outline';
     children: ReactElement;
 };
 
 export default function IconButton({
-    variant = 'outline',
+    variant,
     children,
 }: IconButtonProps) {
     return (
