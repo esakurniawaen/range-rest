@@ -1,7 +1,7 @@
 import { Popover } from '@headlessui/react';
 import clsx from 'clsx';
 import ExtraInformation from '../ExtraInformation';
-import { TimerTime } from './types';
+import type { TimerTime } from './types';
 
 interface TimerTimePickerProps {
     timerTime: TimerTime;
