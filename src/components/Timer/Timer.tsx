@@ -5,8 +5,30 @@ import {
     convertMinutesToSeconds,
     generateRandomNumberInRange,
 } from '~/utils';
-import { Button } from '../buttons';
-import TimerTimePicker, { type TimerTime } from './TimerTimePicker';
+import TimerButton from './TimerButton';
+import TimerDisplay from './TimerDisplay';
+import type { TimerStatus, TimerTime } from './types';
+
+const MIN_COUNTDOWN_TIME = {
+    hours: 0,
+    minutes: 2,
+    seconds: 0,
+};
+
+const MAX_COUNTDOWN_TIME = {
+    hours: 0,
+    minutes: 10,
+    seconds: 0,
+};
+
+const BREAK_DURATION = {
+    hours: 0,
+    minutes: 0,
+    seconds: 15,
+};
+
+const TICK_INTERVAL = 10;
+
 
 export default function Timer() {
     const [timeLeft, setTimeLeft] = useState(0);
@@ -18,27 +40,11 @@ export default function Timer() {
         null,
     );
 
-    const [timerStatus, setTimerStatus] = useState<
-        'inactive' | 'active' | 'break'
-    >('inactive');
+    const [timerStatus, setTimerStatus] = useState<TimerStatus>('inactive');
 
-    const [minimumCountdown, setMinimumCountdown] = useState<TimerTime>({
-        hours: 0,
-        minutes: 2,
-        seconds: 0,
-    });
-    const [maximumCountdown, setMaximumCountdown] = useState<TimerTime>({
-        hours: 0,
-        minutes: 10,
-        seconds: 0,
-    });
-    const [breakDuration, setBreakDuration] = useState<TimerTime>({
-        hours: 0,
-        minutes: 0,
-        seconds: 15,
-    });
-
-   
+    const [minCountdownTime, setMinCountdownTime] = useState<TimerTime>(MIN_COUNTDOWN_TIME);
+    const [maxCountdownTime, setMaxCountdownTime] = useState<TimerTime>(MAX_COUNTDOWN_TIME);
+    const [breakDuration, setBreakDuration] = useState<TimerTime>(BREAK_DURATION);
 
     useUpdateEffect(() => {
         if (timeLeft === 0 && timerStatus === 'active') {
@@ -56,57 +62,56 @@ export default function Timer() {
         setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
     }
 
-    function getRandomCountdownTime() {
-        const minimumCountdownTime =
-            convertHoursToSeconds(minimumCountdown.hours) +
-            convertMinutesToSeconds(minimumCountdown.minutes) +
-            minimumCountdown.seconds;
-        const maximumCountdownTime =
-            convertHoursToSeconds(maximumCountdown.hours) +
-            convertMinutesToSeconds(maximumCountdown.minutes) +
-            maximumCountdown.seconds;
-
-        return generateRandomNumberInRange(
-            minimumCountdownTime,
-            maximumCountdownTime,
-        );
-    }
-
     function startTimer() {
-        console.log('timer is start');
-        const randomCountdownTime = getRandomCountdownTime();
+        const minCountdownTimeInSeconds =
+            convertHoursToSeconds(minCountdownTime.hours) +
+            convertMinutesToSeconds(minCountdownTime.minutes) +
+            minCountdownTime.seconds;
+        const maxCountdownTimeInSeconds =
+            convertHoursToSeconds(maxCountdownTime.hours) +
+            convertMinutesToSeconds(maxCountdownTime.minutes) +
+            maxCountdownTime.seconds;
 
-        setTimeLeft(randomCountdownTime);
-        const interval = setInterval(tick, 10);
+        if (minCountdownTimeInSeconds > maxCountdownTimeInSeconds) {
+            window.alert(
+                'Minimum countdown-time must be less than maximum countdown-time.',
+            );
+            return;
+        }
+
+        const randomCountdownTimeInSeconds = generateRandomNumberInRange(
+            minCountdownTimeInSeconds,
+            maxCountdownTimeInSeconds,
+        );
+
+        playSound('timerStarts');
+        setTimeLeft(randomCountdownTimeInSeconds);
+        const interval = setInterval(tick, TICK_INTERVAL);
         setTimerInterval(interval);
         setTimerStatus('active');
-    }
-
-    function restartTimer() {
-        if (timerInterval) {
-            clearInterval(timerInterval);
-        }
-        if (breakTimeout) {
-            clearTimeout(breakTimeout);
-        }
-        const randomCountdownTime = getRandomCountdownTime();
-        setTimeLeft(randomCountdownTime);
-        const interval = setInterval(tick, 1000);
-        setTimerInterval(interval);
+        console.log('timer is started');
     }
 
     function cancelTimer() {
-        if (timerInterval) {
-            clearInterval(timerInterval);
+        if (timerStatus === 'active') {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            setTimeLeft(0);
         }
-        if (breakTimeout) {
-            clearTimeout(breakTimeout);
+
+        if (timerStatus === 'break') {
+            if (breakTimeout) {
+                clearTimeout(breakTimeout);
+            }
         }
-        setTimeLeft(0);
+
         setTimerStatus('inactive');
+        console.log('timer is canceled');
     }
 
-    function playSound(soundType: 'timerEnds' | 'timerStarts') {
+    function playSound(soundType: 'timerStarts' | 'breakStarts') {
         if (soundType === 'timerStarts') {
             console.log('start');
         }
@@ -115,16 +120,11 @@ export default function Timer() {
     }
 
     function startBreak() {
-        playSound('timerEnds');
+        playSound('breakStarts');
+        setTimerStatus('break');
 
         const timeout = setTimeout(() => {
-            playSound('timerStarts');
-
-            const randomCountdownTime = getRandomCountdownTime();
-
-            setTimeLeft(randomCountdownTime);
-            const interval = setInterval(tick, 1000);
-            setTimerInterval(interval);
+            startTimer();
         }, 5000);
         setBreakTimeout(timeout);
     }
@@ -133,66 +133,31 @@ export default function Timer() {
         <main className="px-4 md:px-6 lg:px-8">
             <section>
                 <h2 className="sr-only">Timer controller</h2>
-                {timerStatus === 'inactive' && (
-                    <div className="grid gap-y-3">
-                        <TimerTimePicker
-                            label="Min countdown"
-                            description="The minimum amount of countdown that permited"
-                            timerTime={minimumCountdown}
-                            onTimerTimeChange={(newMinimumCountdown) =>
-                                setMinimumCountdown(newMinimumCountdown)
-                            }
-                        />
-                        <TimerTimePicker
-                            label="Max countdown"
-                            description="The maximum amount of countdown that permited"
-                            timerTime={maximumCountdown}
-                            onTimerTimeChange={(newMaximumCountdown) =>
-                                setMaximumCountdown(newMaximumCountdown)
-                            }
-                        />
-                        <TimerTimePicker
-                            label="Break duration"
-                            description="After the countdown ends, how many time do you need to rest before the countdown start over."
-                            timerTime={breakDuration}
-                            onTimerTimeChange={(newBreakDuration) =>
-                                setBreakDuration(newBreakDuration)
-                            }
-                        />
-                    </div>
-                )}
-                {timerStatus === 'active' && (
-                    <div>
-                        <p>Timer is active</p>
-                    </div>
-                )}
-                {timerStatus === 'break' && (
-                    <div>
-                        <p>Break is active</p>
-                    </div>
-                )}
+                <TimerDisplay
+                    timerStatus={timerStatus}
+                    minCountdownTime={minCountdownTime}
+                    onMinCountdownTimeChange={(newMinCountdownTime) =>
+                        setMinCountdownTime(newMinCountdownTime)
+                    }
+                    maxCountdownTime={maxCountdownTime}
+                    onMaxCountdownTimeChange={(newMaxCountdownTime) =>
+                        setMaxCountdownTime(newMaxCountdownTime)
+                    }
+                    breakDuration={breakDuration}
+                    onBreakDurationChange={(newBreakDuration) =>
+                        setBreakDuration(newBreakDuration)
+                    }
+                />
 
                 <div className="my-6 flex justify-center">
                     <hr className="w-4/5 border-b border-slate-800" />
                 </div>
 
-                {timerStatus === 'inactive' ? (
-                    <button
-                        onClick={() => startTimer()}
-                        className="w-full rounded-md py-2 text-lg font-semibold text-slate-300 dark:bg-indigo-500 dark:hover:bg-indigo-600"
-                    >
-                        Start
-                    </button>
-                ) : (
-                    <div className='flex gap-x-3'>
-                        <Button variant="secondary" onClick={cancelTimer}>
-                            Cancel
-                        </Button>
-                        <Button variant="secondary" onClick={restartTimer}>
-                            Restart
-                        </Button>
-                    </div>
-                )}
+                <TimerButton
+                    timerStatus={timerStatus}
+                    onStart={() => startTimer()}
+                    onCancel={() => cancelTimer()}
+                />
             </section>
         </main>
     );

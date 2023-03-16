@@ -1,12 +1,7 @@
 import { Popover } from '@headlessui/react';
 import clsx from 'clsx';
 import ExtraInformation from '../ExtraInformation';
-
-export interface TimerTime {
-    hours: number;
-    minutes: number;
-    seconds: number;
-}
+import { TimerTime } from './types';
 
 interface TimerTimePickerProps {
     timerTime: TimerTime;
@@ -35,8 +30,8 @@ export default function TimerTimePicker({
                             className={clsx(
                                 'rounded border border-slate-700 py-1 px-2 shadow outline-none',
                                 {
-                                    'text-slate-300 border-indigo-400': open
-                                }
+                                    'border-indigo-400 text-slate-300': open,
+                                },
                             )}
                         >
                             {timerTime.hours !== 0 &&
@@ -100,7 +95,7 @@ function TimerTimePickable({
                 onChange={(evt) =>
                     onPickableTimerTimeChange(Number(evt.target.value))
                 }
-                className="w-20 rounded text-center text-slate-300 bg-slate-600 shadow border border-transparent outline-none focus:border-indigo-500 transition"
+                className="w-20 rounded border border-transparent bg-slate-600 text-center text-slate-300 shadow outline-none transition focus:border-indigo-500"
                 type="number"
             />
         </div>
