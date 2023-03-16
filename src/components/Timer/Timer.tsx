@@ -74,9 +74,7 @@ export default function Timer() {
                     onTimerStatusChange={(timerStatus) =>
                         setTimerField('status', timerStatus)
                     }
-                    onTimerIntervalChange={(interval) =>
-                        setTimerField('interval', interval)
-                    }
+                    
                     onTimerTimeLeftChange={(timeLeft) =>
                         setTimerField('timeLeft', timeLeft)
                     }

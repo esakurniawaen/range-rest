@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useUpdateEffect, useHarmonicIntervalFn } from 'react-use';
+import { useUpdateEffect, useHarmonicIntervalFn, useTimeout } from 'react-use';
+import { TypeOf } from 'zod';
 import {
     convertTimeToMilliseconds,
     convertTimeToSeconds,
@@ -12,7 +13,6 @@ type TimerButtonProps = {
     timer: Timer;
     onTimerStatusChange: (timerStatus: TimerStatus) => void;
     onTimerTimeLeftChange: (timeLeft: number) => void;
-    onTimerIntervalChange: (interval: NodeJS.Timeout | null) => void;
     onTimerTimeoutChange: (timeout: NodeJS.Timeout | null) => void;
 };
 
@@ -21,29 +21,24 @@ const TICK_INTERVAL = 10;
 export default function TimerButton({
     timer,
     onTimerStatusChange,
-    onTimerIntervalChange,
     onTimerTimeLeftChange,
     onTimerTimeoutChange,
 }: TimerButtonProps) {
-    const [timeLeft, setTimeLeft] = useState(timer.timeLeft);
+    const [timerInterval, setTimerInterval] = useState<typeof TICK_INTERVAL | null>(null);
+const [isTimerTimeoutReady, cancelTimerTimeout] = useTimeout(null)
 
-    const [isTimerIntervalActive, setisTimerIntervalActive] = useState();
+    useHarmonicIntervalFn(tick, timerInterval);
+    
 
-    useHarmonicIntervalFn(() => {
-        tick()
-    }, isTimerIntervalActive)
+    function tick() {
+        const currentTimeLeft = timer.timeLeft - 1;
 
-    useUpdateEffect(() => {
-        if (timeLeft === 0 && timer.status === 'active') {
+        if (currentTimeLeft === 0 && timer.status === 'active') {
             startBreak();
         }
 
-        onTimerTimeLeftChange(timeLeft);
-        console.log(timer.timeLeft);
-    }, [timeLeft]);
-
-    function tick() {
-        setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
+        console.log(currentTimeLeft);
+        onTimerTimeLeftChange(currentTimeLeft);
     }
 
     function startTimer() {
@@ -71,9 +66,8 @@ export default function TimerButton({
         );
 
         playSound('timerStarts');
-        setTimeLeft(randomCountdownTimeInSeconds);
-        const interval = setInterval(tick, TICK_INTERVAL);
-        onTimerIntervalChange(interval);
+        onTimerTimeLeftChange(randomCountdownTimeInSeconds);
+        setTimerInterval(TICK_INTERVAL);
         onTimerStatusChange('active');
 
         // for development only
@@ -82,11 +76,8 @@ export default function TimerButton({
 
     function cancelTimer() {
         if (timer.status === 'active') {
-            if (timer.interval) {
-                clearInterval(timer.interval);
-            }
-
-            setTimeLeft(0);
+            setTimerInterval(null);
+            onTimerTimeLeftChange(0);
         }
 
         if (timer.status === 'break') {
@@ -108,9 +99,7 @@ export default function TimerButton({
     }
 
     function startBreak() {
-        if (timer.interval) {
-            clearInterval(timer.interval);
-        }
+        setTimerInterval(null);
 
         playSound('breakStarts');
         onTimerStatusChange('break');
