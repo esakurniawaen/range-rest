@@ -1,9 +1,17 @@
-export function convertHoursToSeconds(hours: number) {
-    return hours * 3600;
+export function convertTimeToSeconds(
+    hours: number,
+    minutes: number,
+    seconds: number,
+) {
+    return hours * 3600 + minutes * 60 + seconds;
 }
 
-export function convertMinutesToSeconds(minutes: number) {
-    return minutes * 60;
+export function convertTimeToMilliseconds(
+    hours: number,
+    minutes: number,
+    seconds: number,
+) {
+    return (hours * 3600 + minutes * 60 + seconds) * 1000
 }
 
 export function generateRandomNumberInRange(min: number, max: number) {

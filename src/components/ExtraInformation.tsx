@@ -13,7 +13,7 @@ export default function ExtraInformation({ info }: ExtraInformationProps) {
             </Popover.Button>
 
             <Popover.Panel className="absolute z-10 left-1/2 -translate-x-1/2 rounded p-2 dark:bg-slate-800 dark:shadow-lg">
-                <p className='inline-block'>{info}</p>
+                <span className='inline-block'>{info}</span>
             </Popover.Panel>
         </Popover>
     );

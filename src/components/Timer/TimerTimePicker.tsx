@@ -18,10 +18,10 @@ export default function TimerTimePicker({
 }: TimerTimePickerProps) {
     return (
         <div className="flex justify-between rounded-md border border-slate-700 bg-slate-800 py-2 px-3">
-            <p className="inline-flex items-center gap-x-1">
+            <span className="inline-flex items-center gap-x-1">
                 {label}
                 <ExtraInformation info={description} />
-            </p>
+            </span>
 
             <Popover className="relative">
                 {({ open }) => (

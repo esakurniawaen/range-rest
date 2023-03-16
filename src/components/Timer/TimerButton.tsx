@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useUpdateEffect } from 'react-use';
 import {
-    convertHoursToSeconds,
-    convertMinutesToSeconds,
+    convertTimeToMilliseconds,
+    convertTimeToSeconds,
     generateRandomNumberInRange,
 } from '~/utils';
 import { Button } from '../buttons';
@@ -46,14 +46,18 @@ export default function TimerButton({
     }
 
     function startTimer() {
-        const minCountdownTimeInSeconds =
-            convertHoursToSeconds(minCountdownTime.hours) +
-            convertMinutesToSeconds(minCountdownTime.minutes) +
-            minCountdownTime.seconds;
-        const maxCountdownTimeInSeconds =
-            convertHoursToSeconds(maxCountdownTime.hours) +
-            convertMinutesToSeconds(maxCountdownTime.minutes) +
-            maxCountdownTime.seconds;
+        const minCountdownTimeInSeconds = convertTimeToSeconds(
+            minCountdownTime.hours,
+            minCountdownTime.minutes,
+            minCountdownTime.seconds,
+        );
+        const maxCountdownTimeInSeconds = convertTimeToSeconds(
+            maxCountdownTime.hours,
+            maxCountdownTime.minutes,
+            maxCountdownTime.seconds,
+        );
+
+        console.log('min countdown time', minCountdownTimeInSeconds)
 
         if (minCountdownTimeInSeconds > maxCountdownTimeInSeconds) {
             throw new Error(
@@ -71,6 +75,8 @@ export default function TimerButton({
         const interval = setInterval(tick, TICK_INTERVAL);
         setTimerInterval(interval);
         onTimerStatusChange('active');
+
+        // for development only
         console.log('timer is started');
     }
 
@@ -109,14 +115,14 @@ export default function TimerButton({
         playSound('breakStarts');
         onTimerStatusChange('break');
 
-        const breakDurationInSeconds = convertTimeToSeconds()
-            convertHoursToSeconds(breakDuration.hours) +
-            convertMinutesToSeconds(breakDuration.minutes) +
-            breakDuration.seconds;
-        console.log(breakDurationInSeconds)
+        const breakDurationInMilliseconds = convertTimeToMilliseconds(
+            breakDuration.hours,
+            breakDuration.minutes,
+            breakDuration.seconds,
+        );
         const timeout = setTimeout(() => {
             startTimer();
-        }, 5000);
+        }, breakDurationInMilliseconds);
         setBreakTimeout(timeout);
     }
 
