@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { time } from 'console';
+import { useEffect } from 'react';
+import { useMap } from 'react-use';
 import TimerButton from './TimerButton';
 import TimerDisplay from './TimerDisplay';
-import type { TimerStatus, TimerTime } from './types';
+import type { Timer } from './types';
 
 const MIN_COUNTDOWN_TIME = {
     hours: 0,
@@ -21,32 +23,45 @@ const BREAK_DURATION = {
     seconds: 15,
 };
 
+const INITIAL_TIMER: Timer = {
+    timeLeft: 0,
+    interval: null,
+    timeout: null,
+    status: 'inactive',
+    minCountdownTime: MIN_COUNTDOWN_TIME,
+    maxCountdownTime: MAX_COUNTDOWN_TIME,
+    breakDuration: BREAK_DURATION,
+};
+
 export default function Timer() {
-    const [timerStatus, setTimerStatus] = useState<TimerStatus>('inactive');
-    const [minCountdownTime, setMinCountdownTime] =
-        useState<TimerTime>(MIN_COUNTDOWN_TIME);
-    const [maxCountdownTime, setMaxCountdownTime] =
-        useState<TimerTime>(MAX_COUNTDOWN_TIME);
-    const [breakDuration, setBreakDuration] =
-        useState<TimerTime>(BREAK_DURATION);
+    const [timer, { set: setTimerField }] = useMap(INITIAL_TIMER);
+
+    useEffect(() => {
+        // clear the intnerval and tmeout when the component unmounts
+        return () => {
+            if (timer.interval) {
+                clearInterval(timer.interval);
+            }
+            if (timer.timeout) {
+                clearTimeout(timer.timeout);
+            }
+        };
+    }, []);
 
     return (
         <main className="px-4 md:px-6 lg:px-8">
             <section>
                 <h2 className="sr-only">Timer controller</h2>
                 <TimerDisplay
-                    timerStatus={timerStatus}
-                    minCountdownTime={minCountdownTime}
-                    onMinCountdownTimeChange={(newMinCountdownTime) =>
-                        setMinCountdownTime(newMinCountdownTime)
+                    timer={timer}
+                    onMinCountdownTimeChange={(minCountdownTime) =>
+                        setTimerField('minCountdownTime', minCountdownTime)
                     }
-                    maxCountdownTime={maxCountdownTime}
-                    onMaxCountdownTimeChange={(newMaxCountdownTime) =>
-                        setMaxCountdownTime(newMaxCountdownTime)
+                    onMaxCountdownTimeChange={(maxCountdownTime) =>
+                        setTimerField('maxCountdownTime', maxCountdownTime)
                     }
-                    breakDuration={breakDuration}
-                    onBreakDurationChange={(newBreakDuration) =>
-                        setBreakDuration(newBreakDuration)
+                    onBreakDurationChange={(breakDuration) =>
+                        setTimerField('breakDuration', breakDuration)
                     }
                 />
 
@@ -55,13 +70,19 @@ export default function Timer() {
                 </div>
 
                 <TimerButton
-                    timerStatus={timerStatus}
-                    onTimerStatusChange={(newTimerStatus) =>
-                        setTimerStatus(newTimerStatus)
+                    timer={timer}
+                    onTimerStatusChange={(timerStatus) =>
+                        setTimerField('status', timerStatus)
                     }
-                    minCountdownTime={minCountdownTime}
-                    maxCountdownTime={maxCountdownTime}
-                    breakDuration={breakDuration}
+                    onTimerIntervalChange={(interval) =>
+                        setTimerField('interval', interval)
+                    }
+                    onTimerTimeLeftChange={(timeLeft) =>
+                        setTimerField('timeLeft', timeLeft)
+                    }
+                    onTimerTimeoutChange={(timeout) =>
+                        setTimerField('timeout', timeout)
+                    }
                 />
             </section>
         </main>

@@ -1,44 +1,45 @@
-import { useState } from 'react';
-import { useUpdateEffect } from 'react-use';
+import { useEffect, useState } from 'react';
+import { useUpdateEffect, useHarmonicIntervalFn } from 'react-use';
 import {
     convertTimeToMilliseconds,
     convertTimeToSeconds,
     generateRandomNumberInRange,
 } from '~/utils';
 import { Button } from '../buttons';
-import type { TimerStatus, TimerTime } from './types';
+import type { Timer, TimerStatus } from './types';
 
 type TimerButtonProps = {
-    timerStatus: TimerStatus;
+    timer: Timer;
     onTimerStatusChange: (timerStatus: TimerStatus) => void;
-    minCountdownTime: TimerTime;
-    maxCountdownTime: TimerTime;
-    breakDuration: TimerTime;
+    onTimerTimeLeftChange: (timeLeft: number) => void;
+    onTimerIntervalChange: (interval: NodeJS.Timeout | null) => void;
+    onTimerTimeoutChange: (timeout: NodeJS.Timeout | null) => void;
 };
 
 const TICK_INTERVAL = 10;
 
 export default function TimerButton({
-    timerStatus,
+    timer,
     onTimerStatusChange,
-    minCountdownTime,
-    maxCountdownTime,
-    breakDuration,
+    onTimerIntervalChange,
+    onTimerTimeLeftChange,
+    onTimerTimeoutChange,
 }: TimerButtonProps) {
-    const [timeLeft, setTimeLeft] = useState(0);
-    const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
-        null,
-    );
-    const [breakTimeout, setBreakTimeout] = useState<NodeJS.Timeout | null>(
-        null,
-    );
+    const [timeLeft, setTimeLeft] = useState(timer.timeLeft);
+
+    const [isTimerIntervalActive, setisTimerIntervalActive] = useState();
+
+    useHarmonicIntervalFn(() => {
+        tick()
+    }, isTimerIntervalActive)
 
     useUpdateEffect(() => {
-        if (timeLeft === 0 && timerStatus === 'active') {
+        if (timeLeft === 0 && timer.status === 'active') {
             startBreak();
         }
 
-        console.log(timeLeft);
+        onTimerTimeLeftChange(timeLeft);
+        console.log(timer.timeLeft);
     }, [timeLeft]);
 
     function tick() {
@@ -46,6 +47,7 @@ export default function TimerButton({
     }
 
     function startTimer() {
+        const { minCountdownTime, maxCountdownTime } = timer;
         const minCountdownTimeInSeconds = convertTimeToSeconds(
             minCountdownTime.hours,
             minCountdownTime.minutes,
@@ -56,8 +58,6 @@ export default function TimerButton({
             maxCountdownTime.minutes,
             maxCountdownTime.seconds,
         );
-
-        console.log('min countdown time', minCountdownTimeInSeconds)
 
         if (minCountdownTimeInSeconds > maxCountdownTimeInSeconds) {
             throw new Error(
@@ -73,7 +73,7 @@ export default function TimerButton({
         playSound('timerStarts');
         setTimeLeft(randomCountdownTimeInSeconds);
         const interval = setInterval(tick, TICK_INTERVAL);
-        setTimerInterval(interval);
+        onTimerIntervalChange(interval);
         onTimerStatusChange('active');
 
         // for development only
@@ -81,17 +81,17 @@ export default function TimerButton({
     }
 
     function cancelTimer() {
-        if (timerStatus === 'active') {
-            if (timerInterval) {
-                clearInterval(timerInterval);
+        if (timer.status === 'active') {
+            if (timer.interval) {
+                clearInterval(timer.interval);
             }
 
             setTimeLeft(0);
         }
 
-        if (timerStatus === 'break') {
-            if (breakTimeout) {
-                clearTimeout(breakTimeout);
+        if (timer.status === 'break') {
+            if (timer.timeout) {
+                clearTimeout(timer.timeout);
             }
         }
 
@@ -108,13 +108,14 @@ export default function TimerButton({
     }
 
     function startBreak() {
-        if (timerInterval) {
-            clearInterval(timerInterval);
+        if (timer.interval) {
+            clearInterval(timer.interval);
         }
 
         playSound('breakStarts');
         onTimerStatusChange('break');
 
+        const { breakDuration } = timer;
         const breakDurationInMilliseconds = convertTimeToMilliseconds(
             breakDuration.hours,
             breakDuration.minutes,
@@ -123,17 +124,17 @@ export default function TimerButton({
         const timeout = setTimeout(() => {
             startTimer();
         }, breakDurationInMilliseconds);
-        setBreakTimeout(timeout);
+        onTimerTimeoutChange(timeout);
     }
 
     return (
         <Button
             onClick={() =>
-                timerStatus === 'inactive' ? startTimer() : cancelTimer()
+                timer.status === 'inactive' ? startTimer() : cancelTimer()
             }
-            variant={timerStatus === 'inactive' ? 'primary' : 'secondary'}
+            variant={timer.status === 'inactive' ? 'primary' : 'secondary'}
         >
-            {timerStatus === 'inactive' ? 'Start' : 'Cancel'}
+            {timer.status === 'inactive' ? 'Start' : 'Cancel'}
         </Button>
     );
 }
