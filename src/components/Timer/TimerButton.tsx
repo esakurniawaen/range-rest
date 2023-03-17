@@ -1,12 +1,12 @@
-import { useEffectOnce, useHarmonicIntervalFn, useTimeoutFn } from 'react-use';
+import { useHarmonicIntervalFn } from 'react-use';
+import { useTimeout, useInterval } from 'usehooks-ts';
 import {
     convertTimeToMilliseconds,
     convertTimeToSeconds,
     generateRandomNumberInRange,
 } from '~/utils';
 import { Button } from '../buttons';
-import type { TimerStatus, TimerPreferences } from './types';
-import { useTimeout } from 'usehooks-ts';
+import type { TimerPreferences, TimerStatus } from './types';
 
 type TimerButtonProps = {
     timerPreferences: TimerPreferences;
@@ -28,19 +28,18 @@ export default function TimerButton({
     const { breakDuration, minCountdownTime, maxCountdownTime } =
         timerPreferences;
 
-    // use the useTimeout from usehooks-ts
-    const [, cancel, reset] = useTimeoutFn(
+    useTimeout(
         startTimer,
-        convertTimeToMilliseconds(
-            breakDuration.hours,
-            breakDuration.minutes,
-            breakDuration.seconds,
-        ),
+        timerStatus === 'break'
+            ? convertTimeToMilliseconds(
+                  breakDuration.hours,
+                  breakDuration.minutes,
+                  breakDuration.seconds,
+              )
+            : null,
     );
-    useEffectOnce(() => {
-        cancel();
-    });
-    useHarmonicIntervalFn(
+
+    useInterval(
         tick,
         timerStatus === 'active' ? TICK_INTERVAL : null,
     );
@@ -65,15 +64,11 @@ export default function TimerButton({
     function cancelTimer() {
         onTimerTimeLeftChange(0);
         onTimerStatusChange('inactive');
-        // for canceling the break duration if it is active
-        cancel();
     }
 
     function startBreak() {
         playSound('breakStarts');
         onTimerStatusChange('break');
-        // for starting break duration
-        reset();
     }
 
     function getRandomTimerTimeInSeconds() {

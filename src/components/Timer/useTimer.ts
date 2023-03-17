@@ -1,34 +1,32 @@
 import { useState } from 'react';
-import { useEffectOnce, useHarmonicIntervalFn, useTimeoutFn } from 'react-use';
+import { useInterval, useTimeout } from 'usehooks-ts';
 import {
     convertTimeToMilliseconds,
     convertTimeToSeconds,
     generateRandomNumberInRange,
 } from '~/utils';
-import type { TimerStatus, TimerPreferences } from './types';
+import type { TimerPreferences, TimerStatus } from './types';
 
 const TICK_INTERVAL = 20;
 
 export default function useTimer(timerPreferences: TimerPreferences) {
-    const { breakDuration, minCountdownTime, maxCountdownTime } = timerPreferences;
+    const { breakDuration, minCountdownTime, maxCountdownTime } =
+        timerPreferences;
     const [timerStatus, setTimerStatus] = useState<TimerStatus>('inactive');
     const [timerTimeLeft, setTimerTimeLeft] = useState<number | null>(null);
 
-    const [, cancel, reset] = useTimeoutFn(
+    useTimeout(
         startTimer,
-        convertTimeToMilliseconds(
-            breakDuration.hours,
-            breakDuration.minutes,
-            breakDuration.seconds,
-        ),
+        timerStatus === 'break'
+            ? convertTimeToMilliseconds(
+                  breakDuration.hours,
+                  breakDuration.minutes,
+                  breakDuration.seconds,
+              )
+            : null,
     );
-    useEffectOnce(() => {
-        cancel();
-    });
-    useHarmonicIntervalFn(
-        tick,
-        timerStatus === 'active' ? TICK_INTERVAL : null,
-    );
+
+    useInterval(tick, timerStatus === 'active' ? TICK_INTERVAL : null);
 
     function tick() {
         if (timerTimeLeft === null) return;
@@ -52,15 +50,11 @@ export default function useTimer(timerPreferences: TimerPreferences) {
     function cancelTimer() {
         setTimerTimeLeft(null);
         setTimerStatus('inactive');
-        // for canceling the break duration if it is active
-        cancel()
     }
 
     function startBreak() {
         playSound('breakStarts');
         setTimerStatus('break');
-        // to start the break duration
-        reset();
     }
 
     function getRandomTimerTimeInSeconds() {
