@@ -1,34 +1,19 @@
+import { useState } from 'react';
 import { useEffectOnce, useHarmonicIntervalFn, useTimeoutFn } from 'react-use';
 import {
     convertTimeToMilliseconds,
     convertTimeToSeconds,
     generateRandomNumberInRange,
 } from '~/utils';
-import { Button } from '../buttons';
 import type { TimerStatus, TimerPreferences } from './types';
-import { useTimeout } from 'usehooks-ts';
 
-type TimerButtonProps = {
-    timerPreferences: TimerPreferences;
-    timerStatus: TimerStatus;
-    timerTimeLeft: number;
-    onTimerStatusChange: (timerStatus: TimerStatus) => void;
-    onTimerTimeLeftChange: (timeLeft: number) => void;
-};
+const TICK_INTERVAL = 20;
 
-const TICK_INTERVAL = 10;
+export default function useTimer(timerPreferences: TimerPreferences) {
+    const { breakDuration, minCountdownTime, maxCountdownTime } = timerPreferences;
+    const [timerStatus, setTimerStatus] = useState<TimerStatus>('inactive');
+    const [timerTimeLeft, setTimerTimeLeft] = useState<number | null>(null);
 
-export default function TimerButton({
-    timerPreferences,
-    timerStatus,
-    timerTimeLeft,
-    onTimerStatusChange,
-    onTimerTimeLeftChange,
-}: TimerButtonProps) {
-    const { breakDuration, minCountdownTime, maxCountdownTime } =
-        timerPreferences;
-
-    // use the useTimeout from usehooks-ts
     const [, cancel, reset] = useTimeoutFn(
         startTimer,
         convertTimeToMilliseconds(
@@ -46,33 +31,35 @@ export default function TimerButton({
     );
 
     function tick() {
+        if (timerTimeLeft === null) return;
+
         const currentTimeLeft = timerTimeLeft - 1;
-        if (currentTimeLeft === 0 && timerStatus === 'active') {
+        if (currentTimeLeft === 0) {
             startBreak();
         }
-        onTimerTimeLeftChange(currentTimeLeft);
+        setTimerTimeLeft(currentTimeLeft);
         console.log(currentTimeLeft);
     }
 
     function startTimer() {
         playSound('timerStarts');
-        onTimerStatusChange('active');
+        setTimerStatus('active');
 
         const randomCountdownTimeInSeconds = getRandomTimerTimeInSeconds();
-        onTimerTimeLeftChange(randomCountdownTimeInSeconds);
+        setTimerTimeLeft(randomCountdownTimeInSeconds);
     }
 
     function cancelTimer() {
-        onTimerTimeLeftChange(0);
-        onTimerStatusChange('inactive');
+        setTimerTimeLeft(null);
+        setTimerStatus('inactive');
         // for canceling the break duration if it is active
-        cancel();
+        cancel()
     }
 
     function startBreak() {
         playSound('breakStarts');
-        onTimerStatusChange('break');
-        // for starting break duration
+        setTimerStatus('break');
+        // to start the break duration
         reset();
     }
 
@@ -104,14 +91,5 @@ export default function TimerButton({
         const money = 'kdfjdkfj';
     }
 
-    return (
-        <Button
-            onClick={() =>
-                timerStatus === 'inactive' ? startTimer() : cancelTimer()
-            }
-            variant={timerStatus === 'inactive' ? 'primary' : 'secondary'}
-        >
-            {timerStatus === 'inactive' ? 'Start' : 'Cancel'}
-        </Button>
-    );
+    return { startTimer, cancelTimer, timerStatus, timerTimeLeft };
 }

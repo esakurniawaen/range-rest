@@ -1,46 +1,50 @@
 import TimerTimePicker from './TimerTimePicker';
-import type { Timer, TimerTime } from './types';
+import type { Time, TimerPreferences, TimerStatus } from './types';
 
 type TimerDisplayProps = {
-    timer: Timer;
-    onMinCountdownTimeChange: (minCountdownTime: TimerTime) => void;
-    onMaxCountdownTimeChange: (maxCountdownTime: TimerTime) => void;
-    onBreakDurationChange: (breakDuration: TimerTime) => void;
+    timerPreferences: TimerPreferences
+    timerStatus: TimerStatus;
+    onMinCountdownTimeChange: (minCountdownTime: Time) => void;
+    onMaxCountdownTimeChange: (maxCountdownTime: Time) => void;
+    onBreakDurationChange: (breakDuration: Time) => void;
 };
 
 export default function TimerDisplay({
-    timer,
+    timerPreferences,
+    timerStatus,
     onMinCountdownTimeChange,
     onMaxCountdownTimeChange,
     onBreakDurationChange,
 }: TimerDisplayProps) {
+    const { minCountdownTime, maxCountdownTime, breakDuration } = timerPreferences;
+
     return (
         <>
-            {timer.status === 'inactive' ? (
+            {timerStatus === 'inactive' ? (
                 <div className="grid gap-y-3">
                     <TimerTimePicker
                         label="Min countdown"
                         description="The minimum amount of countdown that permited"
-                        timerTime={timer.minCountdownTime}
-                        onTimerTimeChange={onMinCountdownTimeChange}
+                        time={minCountdownTime}
+                        onTimeChange={onMinCountdownTimeChange}
                     />
                     <TimerTimePicker
                         label="Max countdown"
                         description="The maximum amount of countdown that permited"
-                        timerTime={timer.maxCountdownTime}
-                        onTimerTimeChange={onMaxCountdownTimeChange}
+                        time={maxCountdownTime}
+                        onTimeChange={onMaxCountdownTimeChange}
                     />
                     <TimerTimePicker
                         label="Break duration"
                         description="After the countdown ends, how many time do you need to rest before the countdown start over."
-                        timerTime={timer.breakDuration}
-                        onTimerTimeChange={onBreakDurationChange}
+                        time={breakDuration}
+                        onTimeChange={onBreakDurationChange}
                     />
                 </div>
             ) : (
                 <div>
                     <p>
-                        {timer.status === 'active'
+                        {timerStatus === 'active'
                             ? 'Timer is active'
                             : 'Break is active'}
                     </p>
