@@ -13,29 +13,34 @@ export default function useTimer(timerPreferences: TimerPreferences) {
     const { breakDuration, minCountdownTime, maxCountdownTime } =
         timerPreferences;
     const [timerStatus, setTimerStatus] = useState<TimerStatus>('inactive');
-    const [timerTimeLeft, setTimerTimeLeft] = useState<number | null>(null);
-
-    useTimeout(
-        startTimer,
-        timerStatus === 'break'
-            ? convertTimeToMilliseconds(
-                  breakDuration.hours,
-                  breakDuration.minutes,
-                  breakDuration.seconds,
-              )
-            : null,
+    const [activeTimerTimeLeft, setActiveTimerTimeLeft] = useState<
+        number | null
+    >(null);
+    const [breakTimerTimeLeft, setTimerBreakTimeLeft] = useState<number | null>(
+        null,
     );
 
-    useInterval(tick, timerStatus === 'active' ? TICK_INTERVAL : null);
+    const breakDurationInMs = convertTimeToMilliseconds(
+        breakDuration.hours,
+        breakDuration.minutes,
+        breakDuration.seconds,
+    );
 
-    function tick() {
-        if (timerTimeLeft === null) return;
+    useTimeout(startTimer, timerStatus === 'break' ? breakDurationInMs : null);
+    useInterval(activeTimerTick, timerStatus === 'active' ? TICK_INTERVAL : null);
 
-        const currentTimeLeft = timerTimeLeft - 1;
-        if (currentTimeLeft === 0) {
+    function activeTimerTick() {
+        if (activeTimerTimeLeft === null) return;
+
+        const currentTimeLeft = activeTimerTimeLeft - 1;
+        if (currentTimeLeft === 0 || activeTimerTimeLeft === 0) {
             startBreak();
+            setActiveTimerTimeLeft(0);
+            console.log(0);
+            return;
         }
-        setTimerTimeLeft(currentTimeLeft);
+
+        setActiveTimerTimeLeft(currentTimeLeft);
         console.log(currentTimeLeft);
     }
 
@@ -44,11 +49,11 @@ export default function useTimer(timerPreferences: TimerPreferences) {
         setTimerStatus('active');
 
         const randomCountdownTimeInSeconds = getRandomTimerTimeInSeconds();
-        setTimerTimeLeft(randomCountdownTimeInSeconds);
+        setActiveTimerTimeLeft(randomCountdownTimeInSeconds);
     }
 
     function cancelTimer() {
-        setTimerTimeLeft(null);
+        setActiveTimerTimeLeft(null);
         setTimerStatus('inactive');
     }
 
@@ -85,5 +90,5 @@ export default function useTimer(timerPreferences: TimerPreferences) {
         const money = 'kdfjdkfj';
     }
 
-    return { startTimer, cancelTimer, timerStatus, timerTimeLeft };
+    return { startTimer, cancelTimer, timerStatus, activeTimerTimeLeft };
 }

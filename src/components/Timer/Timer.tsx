@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { useLocalStorage } from 'react-use';
 import TimerButton from './TimerButton';
 import TimerDisplay from './TimerDisplay';
-import type { Time, TimerPreferences, TimerStatus } from './types';
+import type { Time, TimerPreferences } from './types';
+import useTimer from './useTimer';
 
 const DEFAULT_MIN_COUNTDOWN_TIME: Time = {
     hours: 0,
@@ -29,14 +29,14 @@ const DEFAULT_TIMER_PREFERENCES = {
 };
 
 export default function Timer() {
-    const [timerStatus, setTimerStatus] = useState<TimerStatus>('inactive');
-    const [timerTimeLeft, setTimerTimeLeft] = useState(0);
     const [timerPreferences, setTimerPreferences] =
         useLocalStorage<TimerPreferences>(
             'timerPreferences',
             DEFAULT_TIMER_PREFERENCES,
         );
-    // const {startTimer, cancelTimer, timerStatus, timerTimeLeft} = useTimer(timerPreferences ?? DEFAULT_TIMER_PREFERENCES)
+       const { startTimer, cancelTimer, timerStatus } = useTimer(
+           timerPreferences ?? DEFAULT_TIMER_PREFERENCES,
+       );
 
     function setTimerPreferenceField<K extends keyof TimerPreferences>(
         key: K,
@@ -50,6 +50,8 @@ export default function Timer() {
         setTimerPreferences(updatedTimerPreferences);
     }
 
+ 
+
     if (!timerPreferences) return null;
 
     return (
@@ -57,8 +59,8 @@ export default function Timer() {
             <section>
                 <h2 className="sr-only">Timer controller</h2>
                 <TimerDisplay
-                    timerPreferences={timerPreferences}
                     timerStatus={timerStatus}
+                    timerPreferences={timerPreferences}
                     onMinCountdownTimeChange={(minCountdownTime) =>
                         setTimerPreferenceField(
                             'minCountdownTime',
@@ -81,13 +83,9 @@ export default function Timer() {
                 </div>
 
                 <TimerButton
-                    timerPreferences={timerPreferences}
                     timerStatus={timerStatus}
-                    timerTimeLeft={timerTimeLeft}
-                    onTimerStatusChange={(status) => setTimerStatus(status)}
-                    onTimerTimeLeftChange={(timeLeft) =>
-                        setTimerTimeLeft(timeLeft)
-                    }
+                    onTimerStart={startTimer}
+                    onTimerCancel={cancelTimer}
                 />
             </section>
         </main>
