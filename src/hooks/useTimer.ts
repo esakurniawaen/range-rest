@@ -5,7 +5,7 @@ import useTimerPreferenceStore from '../store/timerPreferenceStore';
 import type { TimerStatus } from '../types';
 import useAudio from './useAudio';
 
-const TICK_INTERVAL = 100;
+const TICK_INTERVAL = 1000;
 
 export default function useTimer() {
     const { taskTimerPreference, breakTimerPreference } =
@@ -18,15 +18,12 @@ export default function useTimer() {
     useInterval(breakTimerTick, timerStatus === 'break' ? TICK_INTERVAL : null);
     useInterval(taskTimerTick, timerStatus === 'task' ? TICK_INTERVAL : null);
 
-    // const taskStartAudio = useAudio(
-    //     `/audios/taskStart/${taskTimerPreference.startSound}.wav`,
-    // );
-    // const breakStartAudio = useAudio(
-    //     `/audios/breakStart/${breakTimerPreference.startSound}.wav`,
-    // );
-
-    const taskStartAudio = useAudio(`/audios/taskStart/${taskTimerPreference.startSound}.wav`);
-    const breakStartAudio = useAudio(`/audios/breakStart/${breakTimerPreference.startSound}.wav`);
+    const taskStartAudio = useAudio(
+        `/audios/taskStart/${taskTimerPreference.startSound}.wav`,
+    );
+    const breakStartAudio = useAudio(
+        `/audios/breakStart/${breakTimerPreference.startSound}.wav`,
+    );
 
     useUpdateEffect(() => {
         if (taskTimeLeft === 0) {
