@@ -1,22 +1,19 @@
+import clsx from 'clsx';
+import useTimerPreferenceStore from '~/store/timerPreferenceStore';
+import type { TimerStatus } from '~/types';
 import TimerTimePicker from './TimerTimePicker';
-import type { Time, TimerPreferences, TimerStatus } from './types';
 
 type TimerDisplayProps = {
-    timerPreferences: TimerPreferences
     timerStatus: TimerStatus;
-    onMinCountdownTimeChange: (minCountdownTime: Time) => void;
-    onMaxCountdownTimeChange: (maxCountdownTime: Time) => void;
-    onBreakDurationChange: (breakDuration: Time) => void;
 };
 
-export default function TimerDisplay({
-    timerPreferences,
-    timerStatus,
-    onMinCountdownTimeChange,
-    onMaxCountdownTimeChange,
-    onBreakDurationChange,
-}: TimerDisplayProps) {
-    const { minCountdownTime, maxCountdownTime, breakDuration } = timerPreferences;
+export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
+    const {
+        taskTimerPreference,
+        breakTimerPreference,
+        setTaskTimerPreference,
+        setBreakTimerPreference,
+    } = useTimerPreferenceStore();
 
     return (
         <>
@@ -25,26 +22,46 @@ export default function TimerDisplay({
                     <TimerTimePicker
                         label="Min countdown"
                         description="The minimum amount of countdown that permited"
-                        time={minCountdownTime}
-                        onTimeChange={onMinCountdownTimeChange}
+                        time={taskTimerPreference.minTaskDuration}
+                        onTimeChange={(minTaskDuration) =>
+                            setTaskTimerPreference(
+                                'minTaskDuration',
+                                minTaskDuration,
+                            )
+                        }
                     />
                     <TimerTimePicker
                         label="Max countdown"
                         description="The maximum amount of countdown that permited"
-                        time={maxCountdownTime}
-                        onTimeChange={onMaxCountdownTimeChange}
+                        time={taskTimerPreference.maxTaskDuration}
+                        onTimeChange={(maxTaskDuration) =>
+                            setTaskTimerPreference(
+                                'maxTaskDuration',
+                                maxTaskDuration,
+                            )
+                        }
                     />
                     <TimerTimePicker
                         label="Break duration"
-                        description="After the countdown ends, how many time do you need to rest before the countdown start over."
-                        time={breakDuration}
-                        onTimeChange={onBreakDurationChange}
+                        description="After the countdown ends, how many time do you need to rest before the countdown start over again."
+                        time={breakTimerPreference.breakDuration}
+                        onTimeChange={(breakDuration) =>
+                            setBreakTimerPreference(
+                                'breakDuration',
+                                breakDuration,
+                            )
+                        }
                     />
                 </div>
             ) : (
-                <div>
-                    <p>
-                        {timerStatus === 'active'
+                <div className="grid h-[180px] place-items-center gap-y-1">
+                    <p
+                        className={clsx('animate-pulse text-xl font-bold', {
+                            'text-orange-400': timerStatus === 'task',
+                            'text-purple-400': timerStatus === 'break',
+                        })}
+                    >
+                        {timerStatus === 'task'
                             ? 'Timer is active'
                             : 'Break is active'}
                     </p>

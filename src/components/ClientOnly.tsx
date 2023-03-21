@@ -1,14 +1,18 @@
-import { type ReactNode } from 'react';
-import { useMountedState } from 'react-use';
+import { useIsClient } from 'usehooks-ts';
+import { type ElementType, type HTMLAttributes } from 'react';
 
-type ClientOnlyProps = {
-    children: ReactNode;
-};
+interface ClientOnlyProps extends HTMLAttributes<HTMLElement> {
+    as?: ElementType;
+}
 
-export default function ClientOnly({ children }: ClientOnlyProps) {
-    const hasMounted = useMountedState();
+export default function ClientOnly({
+    children,
+    as: Tag = 'div',
+    ...restProps
+}: ClientOnlyProps) {
+    const isClient = useIsClient();
 
-    if (!hasMounted) return null;
+    if (!isClient) return null;
 
-    return <>{children}</>;
+    return <Tag {...restProps}>{children}</Tag>;
 }

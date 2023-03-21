@@ -1,7 +1,8 @@
 import { Popover } from '@headlessui/react';
 import clsx from 'clsx';
+import { forwardRef } from 'react';
+import type { Time } from '../../types';
 import ExtraInformation from '../ExtraInformation';
-import type { Time } from './types';
 
 interface TimerTimePickerProps {
     time: Time;
@@ -10,92 +11,100 @@ interface TimerTimePickerProps {
     description: string;
 }
 
-export default function TimerTimePicker({
-    label,
-    description,
-    time,
-    onTimeChange,
-}: TimerTimePickerProps) {
-    function toDisplayTime() {
-        if (time.hours !== 0)
-            return `${time.hours} ${time.hours <= 1 ? 'hour' : 'hours'}, `;
-        if (time.minutes)
-            return `${time.minutes} ${time.minutes <= 1 ? 'min' : 'mins'}, `;
-        if (time.seconds)
-            return `${time.seconds} ${time.seconds <= 1 ? 'sec' : 'secs'}`;
-    }
+const TimerTimePicker = forwardRef<HTMLElement, TimerTimePickerProps>(
+    ({ label, description, time, onTimeChange }, ref) => {
+        function toDisplayTime() {
+            const hourWord = time.hours > 1 ? 'hrs' : 'hr';
+            const minuteWord = time.minutes > 1 ? 'mins' : 'min';
+            const secondWord = time.seconds > 1 ? 'secs' : 'sec';
 
-    return (
-        <div className="flex justify-between rounded-md border border-slate-700 bg-slate-800 py-2 px-3">
-            <span className="inline-flex items-center gap-x-1">
-                {label}
-                <ExtraInformation info={description} />
-            </span>
+            if (time.hours !== 0)
+                return `${time.hours} ${hourWord}, ${time.minutes} ${minuteWord}, ${time.seconds} ${secondWord}`;
+            if (time.minutes !== 0)
+                return `${time.minutes} ${minuteWord}, ${time.seconds} ${secondWord}`;
 
-            <Popover className="relative">
-                {({ open }) => (
-                    <>
-                        <Popover.Button
-                            className={clsx(
-                                'rounded border border-slate-700 py-1 px-2 shadow outline-none',
-                                {
-                                    'border-indigo-400 text-slate-300': open,
-                                },
-                            )}
-                        >
-                            {toDisplayTime()}
-                        </Popover.Button>
+            return `${time.seconds} ${secondWord}`;
+        }
 
-                        <Popover.Panel className="absolute left-1/2 z-50 mt-1 flex -translate-x-1/2 gap-x-3 rounded-md p-3 dark:bg-slate-700 dark:shadow-lg">
-                            <TimerTimePickable
-                                label="Hours"
-                                pickableTimerTime={time.hours}
-                                onPickableTimerTimeChange={(hours) =>
-                                    onTimeChange({ ...time, hours })
-                                }
-                            />
-                            <TimerTimePickable
-                                label="Minutes"
-                                pickableTimerTime={time.minutes}
-                                onPickableTimerTimeChange={(minutes) =>
-                                    onTimeChange({ ...time, minutes })
-                                }
-                            />
-                            <TimerTimePickable
-                                label="Seconds"
-                                pickableTimerTime={time.seconds}
-                                onPickableTimerTimeChange={(seconds) =>
-                                    onTimeChange({ ...time, seconds })
-                                }
-                            />
-                        </Popover.Panel>
-                    </>
-                )}
-            </Popover>
-        </div>
-    );
-}
+        return (
+            <div className="flex justify-between rounded-md border border-slate-700 bg-slate-800 py-2 px-3">
+                <span className="inline-flex items-center gap-x-1">
+                    {label}
+                    <ExtraInformation info={description} />
+                </span>
+
+                <Popover ref={ref} className="relative">
+                    {({ open }) => (
+                        <>
+                            <Popover.Button
+                                className={clsx(
+                                    'rounded border  py-1 px-2 shadow outline-none',
+                                    {
+                                        'border-blue-400 text-slate-300':
+                                            open,
+                                        'border-slate-700': !open,
+                                    },
+                                )}
+                            >
+                                {toDisplayTime()}
+                            </Popover.Button>
+
+                            <Popover.Overlay className="fixed inset-0 z-30 bg-black/30" />
+
+                            <Popover.Panel className="absolute right-0 z-40 mt-1 flex transform gap-x-3 rounded-md border border-slate-700 p-3 dark:bg-slate-800 dark:shadow-lg">
+                                <TimerTimePickable
+                                    label="Hours"
+                                    pickableTime={time.hours}
+                                    onPickableTimeChange={(hours) =>
+                                        onTimeChange({ ...time, hours })
+                                    }
+                                />
+                                <TimerTimePickable
+                                    label="Minutes"
+                                    pickableTime={time.minutes}
+                                    onPickableTimeChange={(minutes) =>
+                                        onTimeChange({ ...time, minutes })
+                                    }
+                                />
+                                <TimerTimePickable
+                                    label="Seconds"
+                                    pickableTime={time.seconds}
+                                    onPickableTimeChange={(seconds) =>
+                                        onTimeChange({ ...time, seconds })
+                                    }
+                                />
+                            </Popover.Panel>
+                        </>
+                    )}
+                </Popover>
+            </div>
+        );
+    },
+);
+
+TimerTimePicker.displayName = 'FancyName';
+export default TimerTimePicker;
 
 interface TimerTimePickableProps {
     label: string;
-    pickableTimerTime: number;
-    onPickableTimerTimeChange: (pickableTimerTime: number) => void;
+    pickableTime: number;
+    onPickableTimeChange: (pickableTime: number) => void;
 }
 
 function TimerTimePickable({
     label,
-    pickableTimerTime,
-    onPickableTimerTimeChange,
+    pickableTime,
+    onPickableTimeChange,
 }: TimerTimePickableProps) {
     return (
         <div className="flex flex-col items-center">
             <label className="text-sm">{label}</label>
             <input
-                value={String(pickableTimerTime)}
+                value={String(pickableTime)}
                 onChange={(evt) =>
-                    onPickableTimerTimeChange(Number(evt.target.value))
+                    onPickableTimeChange(Number(evt.target.value))
                 }
-                className="w-20 rounded border border-transparent bg-slate-600 text-center text-slate-300 shadow outline-none transition focus:border-indigo-500"
+                className="w-20 rounded border border-slate-600 bg-slate-700 py-0.5 text-center text-slate-300 outline-none transition focus:border-blue-500"
                 type="number"
             />
         </div>

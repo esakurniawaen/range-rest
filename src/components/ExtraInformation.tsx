@@ -1,5 +1,6 @@
 import { Popover } from '@headlessui/react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import clsx from 'clsx';
 
 type ExtraInformationProps = {
     info: string;
@@ -8,13 +9,24 @@ type ExtraInformationProps = {
 export default function ExtraInformation({ info }: ExtraInformationProps) {
     return (
         <Popover className="relative">
-            <Popover.Button className='block'>
-                <QuestionMarkCircleIcon className="h-5 w-5" />
-            </Popover.Button>
+            {({ open }) => (
+                <>
+                    <Popover.Button
+                        className={clsx('block rounded border outline-none', {
+                            'border-blue-400 text-slate-300': open,
+                            'border-transparent': !open,
+                        })}
+                    >
+                        <QuestionMarkCircleIcon className="h-5 w-5" />
+                    </Popover.Button>
 
-            <Popover.Panel className="absolute z-10 left-1/2 -translate-x-1/2 rounded p-2 dark:bg-slate-800 dark:shadow-lg">
-                <span className='inline-block'>{info}</span>
-            </Popover.Panel>
+                    <Popover.Overlay className="fixed inset-0 z-30 bg-black/30" />
+
+                    <Popover.Panel className="absolute mt-1 left-1/2 z-40 -translate-x-1/2  transform rounded p-2 dark:bg-slate-800 dark:shadow-lg">
+                        <span className="inline-block">{info}</span>
+                    </Popover.Panel>
+                </>
+            )}
         </Popover>
     );
 }

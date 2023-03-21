@@ -1,5 +1,5 @@
+import type { TimerStatus } from '~/types';
 import { Button } from '../buttons';
-import type { TimerStatus } from './types';
 
 type TimerButtonProps = {
     timerStatus: TimerStatus;
@@ -8,16 +8,16 @@ type TimerButtonProps = {
 };
 
 export default function TimerButton({
-    onTimerCancel,
-    onTimerStart,
     timerStatus,
+    onTimerStart,
+    onTimerCancel,
 }: TimerButtonProps) {
     return (
         <Button
-            onClick={() =>
-                timerStatus === 'inactive' ? onTimerStart() : onTimerCancel()
-            }
-            variant={timerStatus === 'inactive' ? 'primary' : 'secondary'}
+            width='full'
+            color={timerStatus === 'inactive' ? 'success' : 'error'} 
+            onClick={timerStatus === 'inactive' ? onTimerStart : onTimerCancel}
+            variant={timerStatus === 'inactive' ? 'filled' : 'outlined'}
         >
             {timerStatus === 'inactive' ? 'Start' : 'Cancel'}
         </Button>

@@ -1,15 +1,33 @@
 import { Cog8ToothIcon } from '@heroicons/react/24/outline';
-import  IconButton  from '../buttons/IconButton';
+import { useState } from 'react';
+import { IconButton } from '../buttons';
+import SettingsModal from './SettingsModal';
 
 export default function Header() {
+    const [isSettingsOpen, setSettingsOpen] = useState(false);
+
     return (
-        <header className="flex px-2 items-center mb-6 md:mb-7 lg:mb-8 md:py-4 lg:py-5 py-3 shadow dark:shadow-lg justify-between">
-            <h1 className="font-serif text-xl font-bold text-slate-300">
-                Gaps Learning Timer
-            </h1>
-            <IconButton >
-                <Cog8ToothIcon className='h-6 w-6' />
-            </IconButton>
-        </header>
+        <>
+            <header className="mb-6 flex items-center justify-between px-4 py-3 shadow dark:shadow-md  md:px-6 md:py-4 lg:px-8 lg:py-6">
+                <h1
+                    onClick={() => setSettingsOpen(true)}
+                    className="font-serif text-xl font-bold text-slate-600 dark:text-slate-300"
+                >
+                    Gaps Learning Timer
+                </h1>
+
+                <IconButton
+                    onClick={() => setSettingsOpen(true)}
+                    variant="icon"
+                >
+                    <Cog8ToothIcon className="pointer-events-none h-6 w-6" />
+                </IconButton>
+            </header>
+
+            <SettingsModal
+                open={isSettingsOpen}
+                onClose={() => setSettingsOpen(false)}
+            />
+        </>
     );
 }
