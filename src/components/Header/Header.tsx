@@ -8,7 +8,7 @@ export default function Header() {
 
     return (
         <>
-            <header className="mb-6 flex items-center justify-between px-4 py-3 shadow dark:shadow-md  md:px-6 md:py-4 lg:px-8 lg:py-6">
+            <header className="mb-6 flex items-center justify-between py-3 pl-4 pr-2 shadow dark:shadow-lg md:py-4 md:pl-6 md:pr-4 lg:py-6 lg:pl-8 lg:pr-6">
                 <h1
                     onClick={() => setSettingsOpen(true)}
                     className="font-serif text-xl font-bold text-slate-600 dark:text-slate-300"

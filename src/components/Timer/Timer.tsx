@@ -20,7 +20,7 @@ export default function Timer() {
                 <TimerDisplay timerStatus={timerStatus} />
 
                 <div className="my-6 flex justify-center">
-                    <hr className="w-4/5 border-b border-slate-800" />
+                    <hr className="w-4/5 border-b border-slate-200 dark:border-slate-800" />
                 </div>
 
                 <TimerButton

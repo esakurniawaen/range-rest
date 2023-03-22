@@ -13,16 +13,17 @@ export default function ExtraInformation({ info }: ExtraInformationProps) {
                 <>
                     <Popover.Button
                         className={clsx('block rounded border outline-none', {
-                            'border-blue-400 text-slate-300': open,
+                            'border-blue-500 text-slate-600 dark:border-blue-400 dark:text-slate-300':
+                                open,
                             'border-transparent': !open,
                         })}
                     >
                         <QuestionMarkCircleIcon className="h-5 w-5" />
                     </Popover.Button>
 
-                    <Popover.Overlay className="fixed inset-0 z-30 bg-black/30" />
+                    <Popover.Overlay className="fixed inset-0 z-30 bg-white/30 dark:bg-black/30" />
 
-                    <Popover.Panel className="absolute mt-1 left-1/2 z-40 -translate-x-1/2  transform rounded p-2 dark:bg-slate-800 dark:shadow-lg">
+                    <Popover.Panel className="absolute left-1/2 z-40 mt-1 -translate-x-1/2  transform rounded bg-slate-100 p-2 shadow dark:bg-slate-800 dark:shadow-lg">
                         <span className="inline-block">{info}</span>
                     </Popover.Panel>
                 </>

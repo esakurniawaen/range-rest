@@ -13,8 +13,8 @@ const Home: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <div className="flex h-screen justify-center">
-                <div className="h-full w-full dark:shadow-lg md:max-w-lg">
+            <div className="flex h-screen items-center justify-center">
+                <div className="h-full w-full shadow-md dark:shadow-xl max-w-md">
                     <Header />
                     <Timer />
                     <Footer />
