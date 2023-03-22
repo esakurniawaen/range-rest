@@ -23,7 +23,7 @@ export default function ExtraInformation({ info }: ExtraInformationProps) {
 
                     <Popover.Overlay className="fixed inset-0 z-30 bg-white/30 dark:bg-black/30" />
 
-                    <Popover.Panel className="absolute left-1/2 z-40 mt-1 -translate-x-1/2  transform rounded bg-slate-100 p-2 shadow dark:bg-slate-800 dark:shadow-lg">
+                    <Popover.Panel className="absolute left-1/2 z-40 mt-1 -translate-x-1/2  transform rounded bg-slate-100 p-2 shadow dark:bg-slate-800 dark:shadow-md">
                         <span className="inline-block">{info}</span>
                     </Popover.Panel>
                 </>

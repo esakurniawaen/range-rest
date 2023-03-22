@@ -52,7 +52,7 @@ const TimerTimePicker = forwardRef<HTMLElement, TimerTimePickerProps>(
 
                             <Popover.Overlay className="fixed inset-0 z-30 bg-white/30 dark:bg-black/30" />
 
-                            <Popover.Panel className="absolute right-0 z-40 mt-1 flex transform gap-x-3 rounded-md border border-slate-300 bg-slate-200 p-3 shadow dark:border-slate-700 dark:bg-slate-800 dark:shadow-lg">
+                            <Popover.Panel className="absolute right-0 z-40 mt-1 flex transform gap-x-3 rounded-md border border-slate-300 bg-slate-200 p-3 shadow dark:border-slate-700 dark:bg-slate-800 dark:shadow-md">
                                 <TimerTimePickable
                                     label="Hours"
                                     pickableTime={time.hours}

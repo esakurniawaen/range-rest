@@ -20,7 +20,7 @@ export default function Button({
 }: ButtonProps) {
     return (
         <button
-            className={clsx('border font-semibold transition', {
+            className={clsx('border font-medium transition', {
                 'border-transparent': variant === 'filled',
                 'bg-blue-600 text-blue-100 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800':
                     variant === 'filled' && color === 'primary',

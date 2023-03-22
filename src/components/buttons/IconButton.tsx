@@ -10,7 +10,7 @@ export default function IconButton({ variant = 'icon', children, ...restProps }:
     return (
         <button
             className={clsx(
-                'rounded-lg p-2 transition active:scale-95 dark:hover:text-slate-300',
+                'rounded-lg p-2 transition active:scale-95 hover:text-slate-600 dark:hover:text-slate-300',
                 {
                     'bg-slate-800 outline outline-1 outline-slate-700':
                         variant === 'filled',

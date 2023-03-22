@@ -14,7 +14,7 @@ const Home: NextPage = () => {
             </Head>
 
             <div className="flex h-screen items-center justify-center">
-                <div className="h-full w-full shadow-md dark:shadow-xl max-w-md">
+                <div className="h-full w-full max-w-md md:h-[90%] md:rounded-xl md:shadow-md md:dark:bg-slate-800/10 md:dark:shadow-lg">
                     <Header />
                     <Timer />
                     <Footer />
