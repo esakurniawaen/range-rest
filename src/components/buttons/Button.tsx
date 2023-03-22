@@ -5,11 +5,13 @@ interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
     variant?: 'filled' | 'outlined';
     width?: 'fit' | 'full';
     color?: 'primary' | 'success' | 'error';
+    whenClickScaleDown?: boolean;
     size?: 'small' | 'medium' | 'large';
 }
 
 export default function Button({
     children,
+    whenClickScaleDown = false,
     variant = 'filled',
     width = 'fit',
     color = 'primary',
@@ -36,6 +38,7 @@ export default function Button({
                 'rounded-md py-3 px-4': size === 'medium',
                 'rounded-lg py-4 px-5 text-lg': size === 'large',
                 'w-full': width === 'full',
+                'active:scale-95': whenClickScaleDown,
             })}
             {...restProps}
         >

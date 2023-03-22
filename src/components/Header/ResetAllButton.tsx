@@ -8,7 +8,9 @@ export default function ResetAllButton() {
         useTimerPreferenceStore();
 
     function handleResetAll() {
-        const isContinue = window.confirm("Do you want to reset everything? (that's includes, min countdown, max countdown, break duration, theme, sound when timer starts and ends)");
+        const isContinue = window.confirm(
+            "Do you want to reset everything? (that's includes, min countdown, max countdown, break duration, theme, sound when timer starts and ends)",
+        );
 
         if (!isContinue) return;
 
@@ -23,6 +25,7 @@ export default function ResetAllButton() {
             color="error"
             size="small"
             onClick={handleResetAll}
+            whenClickScaleDown
         >
             Reset all
         </Button>
