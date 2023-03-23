@@ -13,7 +13,7 @@ export default function Header() {
                     onClick={() => setSettingsOpen(true)}
                     className="font-serif text-xl font-bold text-slate-600 dark:text-slate-300"
                 >
-                    Gaps Learning Timer
+                    Gap Timer
                 </h1>
 
                 <IconButton

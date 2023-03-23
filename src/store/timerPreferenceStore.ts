@@ -4,12 +4,12 @@ import type { TaskTimerPreference, BreakTimerPreference } from '~/types';
 const DEFAULT_TASK_TIMER_PREFERENCE = {
     minTaskDuration: {
         hours: 0,
-        minutes: 2,
-        seconds: 0,
+        minutes: 0,
+        seconds: 10,
     },
     maxTaskDuration: {
         hours: 0,
-        minutes: 10,
+        minutes: 3,
         seconds: 0,
     },
     startSound: 'attention-bell-ding',
@@ -20,7 +20,7 @@ const DEFAULT_BREAK_TIMER_PREFERENCE = {
     breakDuration: {
         hours: 0,
         minutes: 0,
-        seconds: 15,
+        seconds: 10,
     },
     startSound: 'relaxing-bell-chime',
     startSounds: ['relaxing-bell-chime'],

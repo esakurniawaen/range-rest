@@ -19,8 +19,8 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
             {timerStatus === 'inactive' ? (
                 <div className="grid gap-y-3">
                     <TimerTimePicker
-                        label="Min countdown"
-                        description="The minimum amount of countdown that permited"
+                        label="Minimum"
+                        description="The minimum amount of duration allowed for a timer."
                         time={taskTimerPreference.minTaskDuration}
                         onTimeChange={(minTaskDuration) =>
                             setTaskTimerPreference(
@@ -30,8 +30,8 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
                         }
                     />
                     <TimerTimePicker
-                        label="Max countdown"
-                        description="The maximum amount of countdown that permited"
+                        label="Maximum"
+                        description="The maximum amount of duration allowed for a timer."
                         time={taskTimerPreference.maxTaskDuration}
                         onTimeChange={(maxTaskDuration) =>
                             setTaskTimerPreference(
@@ -42,7 +42,7 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
                     />
                     <TimerTimePicker
                         label="Break duration"
-                        description="After the countdown ends, how many time do you need to rest before the countdown start over again."
+                        description="When the timer ends, how long do you need to rest before it restarts."
                         time={breakTimerPreference.breakDuration}
                         onTimeChange={(breakDuration) =>
                             setBreakTimerPreference(
