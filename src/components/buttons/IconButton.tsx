@@ -6,14 +6,18 @@ interface IconButtonProps extends HTMLAttributes<HTMLButtonElement> {
     children: ReactElement;
 }
 
-export default function IconButton({ variant = 'icon', children, ...restProps }: IconButtonProps) {
+export default function IconButton({
+    variant = 'icon',
+    children,
+    ...restProps
+}: IconButtonProps) {
     return (
         <button
             className={clsx(
-                'rounded-lg p-2 transition active:scale-95 hover:text-slate-600 dark:hover:text-slate-300',
+                'rounded-full border p-2 transition hover:text-slate-600 active:scale-95 dark:hover:text-slate-300',
                 {
-                    'bg-slate-800 outline outline-1 outline-slate-700':
-                        variant === 'filled',
+                    'border-slate-700 bg-slate-800': variant === 'filled',
+                    'border-transparent': variant === 'icon',
                 },
             )}
             {...restProps}

@@ -8,7 +8,7 @@ export default function Header() {
 
     return (
         <>
-            <header className="mb-6 md:bg-slate-200/20 md:dark:bg-slate-800/20 md:rounded-t-xl flex items-center justify-between py-3 pl-4 pr-2 shadow dark:shadow-md md:py-4 md:pl-6 md:pr-4 lg:py-6 lg:pl-8 lg:pr-6">
+            <header className="mb-6 flex items-center justify-between py-3 pl-4 pr-2 shadow dark:shadow-md md:rounded-t-xl md:bg-slate-200/20 md:py-4 md:pl-6 md:pr-4 md:dark:bg-slate-800/20 lg:py-6 lg:pl-8 lg:pr-6">
                 <h1
                     onClick={() => setSettingsOpen(true)}
                     className="font-serif text-xl font-bold text-slate-600 dark:text-slate-300"
@@ -20,7 +20,7 @@ export default function Header() {
                     onClick={() => setSettingsOpen(true)}
                     variant="icon"
                 >
-                    <Cog8ToothIcon className="pointer-events-none h-6 w-6" />
+                    <Cog8ToothIcon className="h-6 w-6" />
                 </IconButton>
             </header>
 
