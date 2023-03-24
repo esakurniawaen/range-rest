@@ -1,11 +1,12 @@
 import { create } from 'zustand';
-import type { TaskTimerPreference, BreakTimerPreference } from '~/types';
+import { persist } from 'zustand/middleware';
+import type { BreakTimerPreference, TaskTimerPreference } from '~/types';
 
 const DEFAULT_TASK_TIMER_PREFERENCE = {
     minTaskDuration: {
         hours: 0,
-        minutes: 0,
-        seconds: 10,
+        minutes: 1,
+        seconds: 0,
     },
     maxTaskDuration: {
         hours: 0,
@@ -44,37 +45,42 @@ type TimerPreferenceAction = {
     resetBreakTimerPreference: () => void;
 };
 
-const useTimerPreferenceStore = create<
-    TimerPreferenceState & TimerPreferenceAction
->((set) => ({
-    taskTimerPreference: DEFAULT_TASK_TIMER_PREFERENCE,
-    breakTimerPreference: DEFAULT_BREAK_TIMER_PREFERENCE,
-    setTaskTimerPreference: (key, value) => {
-        set((state) => ({
-            taskTimerPreference: {
-                ...state.taskTimerPreference,
-                [key]: value,
-            },
-        }));
-    },
-    setBreakTimerPreference: (key, value) => {
-        set((state) => ({
-            breakTimerPreference: {
-                ...state.breakTimerPreference,
-                [key]: value,
-            },
-        }));
-    },
-    resetTaskTimerPreference: () =>
-        set((state) => ({
-            ...state,
+const useTimerPreferenceStore = create(
+    persist<TimerPreferenceState & TimerPreferenceAction>(
+        (set) => ({
             taskTimerPreference: DEFAULT_TASK_TIMER_PREFERENCE,
-        })),
-    resetBreakTimerPreference: () =>
-        set((state) => ({
-            ...state,
             breakTimerPreference: DEFAULT_BREAK_TIMER_PREFERENCE,
-        })),
-}));
+            setTaskTimerPreference: (key, value) => {
+                set((state) => ({
+                    taskTimerPreference: {
+                        ...state.taskTimerPreference,
+                        [key]: value,
+                    },
+                }));
+            },
+            setBreakTimerPreference: (key, value) => {
+                set((state) => ({
+                    breakTimerPreference: {
+                        ...state.breakTimerPreference,
+                        [key]: value,
+                    },
+                }));
+            },
+            resetTaskTimerPreference: () =>
+                set((state) => ({
+                    ...state,
+                    taskTimerPreference: DEFAULT_TASK_TIMER_PREFERENCE,
+                })),
+            resetBreakTimerPreference: () =>
+                set((state) => ({
+                    ...state,
+                    breakTimerPreference: DEFAULT_BREAK_TIMER_PREFERENCE,
+                })),
+        }),
+        {
+            name: 'timer-preference-storage', 
+        },
+    ),
+);
 
 export default useTimerPreferenceStore;
