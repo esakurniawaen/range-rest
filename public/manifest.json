@@ -6,7 +6,7 @@
     "start_url": "/",
     "name": "Gap Timer",
     "short_name": "Gap Timer",
-    "description": "A Timer web app where you can generate a random timer in range and have a break period after the timer ends.",
+    "description": "A timer web app that generates a random timer within a specified range, and includes a break period after the timer ends before restarting the timer again.",
     "icons": [
         {
             "src": "/icon-192x192.png",
