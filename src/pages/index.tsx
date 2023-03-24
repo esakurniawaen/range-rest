@@ -3,10 +3,11 @@ import Head from 'next/head';
 import Header from '~/components/Header/Header';
 import Timer from '~/components/Timer/Timer';
 import Footer from '~/components/Footer';
+import { Fragment } from 'react';
 
 const Home: NextPage = () => {
     return (
-        <>
+        <Fragment>
             <Head>
                 <title>Timer</title>
                 <meta
@@ -23,7 +24,7 @@ const Home: NextPage = () => {
                     <Footer />
                 </div>
             </div>
-        </>
+        </Fragment>
     );
 };
 

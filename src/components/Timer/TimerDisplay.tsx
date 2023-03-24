@@ -1,5 +1,7 @@
+import { Fragment } from 'react';
 import useTimerPreferenceStore from '~/store/timerPreferenceStore';
 import type { TimerStatus } from '~/types';
+import ClientOnly from '../ClientOnly';
 import TimerDurationPicker from './TimerDurationPicker';
 
 type TimerDisplayProps = {
@@ -15,7 +17,7 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
     } = useTimerPreferenceStore();
 
     return (
-        <>
+        <ClientOnly as={Fragment}>
             {timerStatus === 'inactive' ? (
                 <div className="grid gap-y-3">
                     <TimerDurationPicker
@@ -55,7 +57,7 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
             ) : (
                 <div className="flex h-[180px] flex-col items-center justify-center gap-y-3 ">
                     {timerStatus === 'task' ? (
-                        <>
+                        <Fragment>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="h-9 w-9 animate-spin fill-orange-500 dark:fill-orange-400"
@@ -66,9 +68,9 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
                             <span className="text-sm font-medium text-slate-400 dark:text-slate-500">
                                 Timer is Active
                             </span>
-                        </>
+                        </Fragment>
                     ) : (
-                        <>
+                        <Fragment>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="h-9 w-9 animate-pulse fill-purple-500 dark:fill-purple-400"
@@ -79,10 +81,10 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
                             <span className="text-sm font-medium text-slate-400 dark:text-slate-500">
                                 Break is Active
                             </span>
-                        </>
+                        </Fragment>
                     )}
                 </div>
             )}
-        </>
+        </ClientOnly>
     );
 }

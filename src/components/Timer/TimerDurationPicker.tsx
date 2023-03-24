@@ -1,6 +1,6 @@
 import { Popover } from '@headlessui/react';
 import clsx from 'clsx';
-import { forwardRef } from 'react';
+import { forwardRef, Fragment } from 'react';
 import type { Duration } from '~/types';
 import ExtraInformation from '../ExtraInformation';
 
@@ -35,7 +35,7 @@ const TimerDurationPicker = forwardRef<HTMLElement, TimerDurationPickerProps>(
 
                 <Popover ref={ref} className="relative">
                     {({ open }) => (
-                        <>
+                        <Fragment>
                             <Popover.Button
                                 className={clsx(
                                     'shadow-xs rounded  border py-1 px-2 outline-none dark:shadow',
@@ -57,7 +57,10 @@ const TimerDurationPicker = forwardRef<HTMLElement, TimerDurationPickerProps>(
                                     label="Hours"
                                     pickableDuration={duration.hours}
                                     onPickableDurationChange={(hours) =>
-                                        onTimeChange({ ...duration, hours })
+                                        onTimeChange({
+                                            ...duration,
+                                            hours: Math.min(hours, 23),
+                                        })
                                     }
                                     max={23}
                                 />
@@ -65,7 +68,10 @@ const TimerDurationPicker = forwardRef<HTMLElement, TimerDurationPickerProps>(
                                     label="Minutes"
                                     pickableDuration={duration.minutes}
                                     onPickableDurationChange={(minutes) =>
-                                        onTimeChange({ ...duration, minutes })
+                                        onTimeChange({
+                                            ...duration,
+                                            minutes: Math.min(minutes, 59),
+                                        })
                                     }
                                     max={59}
                                 />
@@ -73,12 +79,15 @@ const TimerDurationPicker = forwardRef<HTMLElement, TimerDurationPickerProps>(
                                     label="Seconds"
                                     pickableDuration={duration.seconds}
                                     onPickableDurationChange={(seconds) =>
-                                        onTimeChange({ ...duration, seconds })
+                                        onTimeChange({
+                                            ...duration,
+                                            seconds: Math.min(seconds, 59),
+                                        })
                                     }
                                     max={59}
                                 />
                             </Popover.Panel>
-                        </>
+                        </Fragment>
                     )}
                 </Popover>
             </div>
@@ -110,7 +119,7 @@ function TimerDurationPickable({
                 max={max}
                 value={String(pickableDuration)}
                 onChange={(evt) =>
-                    onPickableDurationChange(Number(evt.target.value))
+                    onPickableDurationChange(parseInt(evt.target.value) || 0)
                 }
                 className="w-20 rounded border border-slate-400 bg-slate-300 py-0.5 text-center text-slate-600 outline-none transition focus:border-blue-400 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:focus:border-blue-500"
                 type="number"

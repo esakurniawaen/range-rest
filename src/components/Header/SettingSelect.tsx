@@ -1,6 +1,7 @@
 import { Listbox } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { Fragment } from "react";
 import type { Theme } from "~/types";
 import { capitalizeFirstWord } from "~/utils";
 
@@ -44,7 +45,7 @@ export default function SettingSelect<T extends Theme | string>({
                                 value={option}
                             >
                                 {({ selected }) => (
-                                    <>
+                                    <Fragment>
                                         <span className={`block truncate `}>
                                             {capitalizeFirstWord(
                                                 option.replaceAll('-', ' '),
@@ -58,7 +59,7 @@ export default function SettingSelect<T extends Theme | string>({
                                                 />
                                             </span>
                                         ) : null}
-                                    </>
+                                    </Fragment>
                                 )}
                             </Listbox.Option>
                         ))}

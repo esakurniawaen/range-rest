@@ -1,6 +1,7 @@
 import { Popover } from '@headlessui/react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
+import { Fragment } from 'react';
 
 type ExtraInformationProps = {
     info: string;
@@ -10,7 +11,7 @@ export default function ExtraInformation({ info }: ExtraInformationProps) {
     return (
         <Popover className="relative">
             {({ open }) => (
-                <>
+                <Fragment>
                     <Popover.Button
                         className={clsx('block rounded border outline-none', {
                             'border-blue-500 text-slate-600 dark:border-blue-400 dark:text-slate-300':
@@ -28,7 +29,7 @@ export default function ExtraInformation({ info }: ExtraInformationProps) {
                             {info}
                         </span>
                     </Popover.Panel>
-                </>
+                </Fragment>
             )}
         </Popover>
     );
