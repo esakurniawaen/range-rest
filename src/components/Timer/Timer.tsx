@@ -1,17 +1,17 @@
+import { useUpdateEffect } from 'usehooks-ts';
 import useTimer from '~/hooks/useTimer';
 import TimerButton from './TimerButton';
 import TimerDisplay from './TimerDisplay';
 
 export default function Timer() {
-    const { startTimer, cancelTimer, timerStatus } = useTimer();
+    const { startTimer, cancelTimer, timerStatus, taskTimeLeft, breakTimeLeft } = useTimer();
 
-    // for development only
-    // useUpdateEffect(() => {
-    //     console.log('Task: ', taskTimeLeft);
-    // }, [taskTimeLeft]);
-    // useUpdateEffect(() => {
-    //     console.log('Break: ', breakTimeLeft);
-    // }, [breakTimeLeft]);
+    useUpdateEffect(() => {
+        console.log('Task: ', taskTimeLeft);
+    }, [taskTimeLeft]);
+    useUpdateEffect(() => {
+        console.log('Break: ', breakTimeLeft);
+    }, [breakTimeLeft]);
 
     return (
         <main className="px-4 md:px-6 lg:px-8">

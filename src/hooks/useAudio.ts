@@ -5,7 +5,6 @@ export default function useAudio(url: `/audios/${string}`) {
 
     useEffect(() => {
         setAudio(new Audio(url));
-        console.log(audio);
     }, [url]);
 
     return audio;
