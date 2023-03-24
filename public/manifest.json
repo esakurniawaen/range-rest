@@ -1,0 +1,32 @@
+{
+    "theme_color": "#0891b2",
+    "background_color": "#0e7490",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "name": "Gap Timer",
+    "short_name": "Gap Timer",
+    "description": "A Timer web app where you can generate a random timer in range and have a break period after the timer ends.",
+    "icons": [
+        {
+            "src": "/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-256x256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-384x384.png",
+            "sizes": "384x384",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
