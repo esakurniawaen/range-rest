@@ -1,6 +1,6 @@
 import useTimerPreferenceStore from '~/store/timerPreferenceStore';
 import type { TimerStatus } from '~/types';
-import TimerTimePicker from './TimerTimePicker';
+import TimerDurationPicker from './TimerDurationPicker';
 
 type TimerDisplayProps = {
     timerStatus: TimerStatus;
@@ -18,10 +18,10 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
         <>
             {timerStatus === 'inactive' ? (
                 <div className="grid gap-y-3">
-                    <TimerTimePicker
+                    <TimerDurationPicker
                         label="Minimum"
                         description="The minimum amount of duration allowed for a timer."
-                        time={taskTimerPreference.minTaskDuration}
+                        duration={taskTimerPreference.minTaskDuration}
                         onTimeChange={(minTaskDuration) =>
                             setTaskTimerPreference(
                                 'minTaskDuration',
@@ -29,10 +29,10 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
                             )
                         }
                     />
-                    <TimerTimePicker
+                    <TimerDurationPicker
                         label="Maximum"
                         description="The maximum amount of duration allowed for a timer."
-                        time={taskTimerPreference.maxTaskDuration}
+                        duration={taskTimerPreference.maxTaskDuration}
                         onTimeChange={(maxTaskDuration) =>
                             setTaskTimerPreference(
                                 'maxTaskDuration',
@@ -40,10 +40,10 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
                             )
                         }
                     />
-                    <TimerTimePicker
+                    <TimerDurationPicker
                         label="Break duration"
                         description="When the timer ends, how long do you need to rest before it restarts."
-                        time={breakTimerPreference.breakDuration}
+                        duration={breakTimerPreference.breakDuration}
                         onTimeChange={(breakDuration) =>
                             setBreakTimerPreference(
                                 'breakDuration',

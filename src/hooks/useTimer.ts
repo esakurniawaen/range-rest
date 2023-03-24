@@ -94,7 +94,7 @@ export default function useTimer() {
 
         if (minCountdownTimeInSeconds >= maxTaskDurationInSeconds) {
             window.alert(
-                'The minimum countdow-time must be less than the maximum countdown-time.',
+                'The minimum countdown-duration must be less than the maximum countdown-duration.',
             );
             return null;
         }

@@ -1,29 +1,29 @@
 import { Popover } from '@headlessui/react';
 import clsx from 'clsx';
 import { forwardRef } from 'react';
-import type { Time } from '../../types';
+import type { Duration } from '~/types';
 import ExtraInformation from '../ExtraInformation';
 
-interface TimerTimePickerProps {
-    time: Time;
-    onTimeChange: (timer: Time) => void;
+interface TimerDurationPickerProps {
+    duration: Duration;
+    onTimeChange: (duration: Duration) => void;
     label: string;
     description: string;
 }
 
-const TimerTimePicker = forwardRef<HTMLElement, TimerTimePickerProps>(
-    ({ label, description, time, onTimeChange }, ref) => {
+const TimerDurationPicker = forwardRef<HTMLElement, TimerDurationPickerProps>(
+    ({ label, description, duration, onTimeChange }, ref) => {
         function toDisplayTime() {
-            const hourWord = time.hours > 1 ? 'hrs' : 'hr';
-            const minuteWord = time.minutes > 1 ? 'mins' : 'min';
-            const secondWord = time.seconds > 1 ? 'secs' : 'sec';
+            const hourWord = duration.hours > 1 ? 'hrs' : 'hr';
+            const minuteWord = duration.minutes > 1 ? 'mins' : 'min';
+            const secondWord = duration.seconds > 1 ? 'secs' : 'sec';
 
-            if (time.hours !== 0)
-                return `${time.hours} ${hourWord}, ${time.minutes} ${minuteWord}, ${time.seconds} ${secondWord}`;
-            if (time.minutes !== 0)
-                return `${time.minutes} ${minuteWord}, ${time.seconds} ${secondWord}`;
+            if (duration.hours !== 0)
+                return `${duration.hours} ${hourWord}, ${duration.minutes} ${minuteWord}, ${duration.seconds} ${secondWord}`;
+            if (duration.minutes !== 0)
+                return `${duration.minutes} ${minuteWord}, ${duration.seconds} ${secondWord}`;
 
-            return `${time.seconds} ${secondWord}`;
+            return `${duration.seconds} ${secondWord}`;
         }
 
         return (
@@ -53,26 +53,29 @@ const TimerTimePicker = forwardRef<HTMLElement, TimerTimePickerProps>(
                             <Popover.Overlay className="fixed inset-0 z-30 bg-white/30 dark:bg-black/30" />
 
                             <Popover.Panel className="absolute right-0 z-40 mt-1 flex transform gap-x-3 rounded-md border border-slate-300 bg-slate-200 p-3 shadow dark:border-slate-700 dark:bg-slate-800 dark:shadow-md">
-                                <TimerTimePickable
+                                <TimerDurationPickable
                                     label="Hours"
-                                    pickableTime={time.hours}
-                                    onPickableTimeChange={(hours) =>
-                                        onTimeChange({ ...time, hours })
+                                    pickableDuration={duration.hours}
+                                    onPickableDurationChange={(hours) =>
+                                        onTimeChange({ ...duration, hours })
                                     }
+                                    max={23}
                                 />
-                                <TimerTimePickable
+                                <TimerDurationPickable
                                     label="Minutes"
-                                    pickableTime={time.minutes}
-                                    onPickableTimeChange={(minutes) =>
-                                        onTimeChange({ ...time, minutes })
+                                    pickableDuration={duration.minutes}
+                                    onPickableDurationChange={(minutes) =>
+                                        onTimeChange({ ...duration, minutes })
                                     }
+                                    max={59}
                                 />
-                                <TimerTimePickable
+                                <TimerDurationPickable
                                     label="Seconds"
-                                    pickableTime={time.seconds}
-                                    onPickableTimeChange={(seconds) =>
-                                        onTimeChange({ ...time, seconds })
+                                    pickableDuration={duration.seconds}
+                                    onPickableDurationChange={(seconds) =>
+                                        onTimeChange({ ...duration, seconds })
                                     }
+                                    max={59}
                                 />
                             </Popover.Panel>
                         </>
@@ -83,27 +86,31 @@ const TimerTimePicker = forwardRef<HTMLElement, TimerTimePickerProps>(
     },
 );
 
-TimerTimePicker.displayName = 'FancyName';
-export default TimerTimePicker;
+TimerDurationPicker.displayName = 'FancyName';
+export default TimerDurationPicker;
 
-interface TimerTimePickableProps {
+interface TimerDurationPickable {
     label: string;
-    pickableTime: number;
-    onPickableTimeChange: (pickableTime: number) => void;
+    pickableDuration: number;
+    onPickableDurationChange: (pickableDuration: number) => void;
+    max: number;
 }
 
-function TimerTimePickable({
+function TimerDurationPickable({
+    max,
     label,
-    pickableTime,
-    onPickableTimeChange,
-}: TimerTimePickableProps) {
+    pickableDuration,
+    onPickableDurationChange,
+}: TimerDurationPickable) {
     return (
         <div className="flex flex-col items-center">
             <label className="text-sm">{label}</label>
             <input
-                value={String(pickableTime)}
+                min={0}
+                max={max}
+                value={String(pickableDuration)}
                 onChange={(evt) =>
-                    onPickableTimeChange(Number(evt.target.value))
+                    onPickableDurationChange(Number(evt.target.value))
                 }
                 className="w-20 rounded border border-slate-400 bg-slate-300 py-0.5 text-center text-slate-600 outline-none transition focus:border-blue-400 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:focus:border-blue-500"
                 type="number"

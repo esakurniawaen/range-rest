@@ -3,21 +3,21 @@ export type Theme = 'system' | ResolvedTheme;
 
 export type TimerStatus = 'inactive' | 'task' | 'break';
 
-export type Time = {
+export type Duration = {
     hours: number;
     minutes: number;
     seconds: number;
 };
 
 export type TaskTimerPreference = {
-    minTaskDuration: Time;
-    maxTaskDuration: Time;
+    minTaskDuration: Duration;
+    maxTaskDuration: Duration;
     startSound: string;
     startSounds: string[];
 };
 
 export type BreakTimerPreference = {
-    breakDuration: Time;
+    breakDuration: Duration;
     startSound: string;
     startSounds: string[];
 };
