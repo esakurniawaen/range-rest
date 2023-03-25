@@ -1,12 +1,14 @@
-import { Listbox } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import { Fragment } from "react";
-import type { Theme } from "~/types";
-import { capitalizeFirstWord } from "~/utils";
+import { Listbox } from '@headlessui/react';
+import { CheckIcon } from '@heroicons/react/24/outline';
+import clsx from 'clsx';
+import { Fragment } from 'react';
+import type { Theme } from '~/types';
+import { capitalizeFirstWord } from '~/utils';
+import ExtraInformation from '../ExtraInformation';
 
 type SettingSelectProps<T> = {
     label: string;
+    description?: string;
     options: T[];
     selectedOption: T;
     onSelectedOptionChange: (option: T) => void;
@@ -14,13 +16,16 @@ type SettingSelectProps<T> = {
 
 export default function SettingSelect<T extends Theme | string>({
     label,
+    description,
     options,
     selectedOption,
     onSelectedOptionChange,
 }: SettingSelectProps<T>) {
     return (
         <li className="flex justify-between py-4">
-            <span>{label}</span>
+            <div>
+                {label} {description && <ExtraInformation info={description} />}
+            </div>
             <Listbox value={selectedOption} onChange={onSelectedOptionChange}>
                 <div className="relative">
                     <Listbox.Button className="rounded border border-slate-300 py-1 px-2 dark:border-slate-700">

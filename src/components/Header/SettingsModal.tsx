@@ -57,7 +57,7 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
                         </ClientOnly>
 
                         <SettingSelect
-                            label="Sound when timer starts"
+                            label="Sound when timer ends"
                             options={taskTimerPreference.endSounds}
                             selectedOption={taskTimerPreference.endSound}
                             onSelectedOptionChange={(taskStartSound) =>
@@ -68,7 +68,7 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
                             }
                         />
                         <SettingSelect
-                            label="Sound when break starts"
+                            label="Sound when break ends"
                             options={breakTimerPreference.endSounds}
                             selectedOption={breakTimerPreference.endSound}
                             onSelectedOptionChange={(breakStartSound) =>
@@ -91,9 +91,7 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
 
 function usePlaySoundWhenChanged(taskEndSound: string, breakEndSound: string) {
     const taskEndAudio = useAudio(`/audios/taskEnd/${taskEndSound}.wav`);
-    const breakEndAudio = useAudio(
-        `/audios/breakEnd/${breakEndSound}.wav`,
-    );
+    const breakEndAudio = useAudio(`/audios/breakEnd/${breakEndSound}.wav`);
 
     useUpdateEffect(() => {
         taskEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
