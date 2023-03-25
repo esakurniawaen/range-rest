@@ -18,7 +18,7 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
 
     return (
         <ClientOnly as={Fragment}>
-            {timerStatus === 'inactive' ? (
+            {timerStatus === 'idle' ? (
                 <div className="grid gap-y-3">
                     <TimerDurationPicker
                         label="Minimum"
@@ -56,7 +56,7 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
                 </div>
             ) : (
                 <div className="flex h-[180px] flex-col items-center justify-center gap-y-3 ">
-                    {timerStatus === 'task' ? (
+                    {timerStatus === 'taskActive' && (
                         <Fragment>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +69,8 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
                                 Timer is Active
                             </span>
                         </Fragment>
-                    ) : (
+                    )}
+                    {timerStatus === 'breakActive' && (
                         <Fragment>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -83,6 +84,8 @@ export default function TimerDisplay({ timerStatus }: TimerDisplayProps) {
                             </span>
                         </Fragment>
                     )}
+                    {timerStatus === 'taskEnd' && <div>Timer Done</div>}
+                    {timerStatus === 'breakEnd' && <div>Break Done</div>}
                 </div>
             )}
         </ClientOnly>

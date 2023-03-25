@@ -1,7 +1,12 @@
 export type ResolvedTheme = 'light' | 'dark';
 export type Theme = 'system' | ResolvedTheme;
 
-export type TimerStatus = 'inactive' | 'task' | 'break';
+export type TimerStatus =
+    | 'idle'
+    | 'taskActive'
+    | 'taskEnd'
+    | 'breakActive'
+    | 'breakEnd';
 
 export type Duration = {
     hours: number;
@@ -9,15 +14,3 @@ export type Duration = {
     seconds: number;
 };
 
-export type TaskTimerPreference = {
-    minTaskDuration: Duration;
-    maxTaskDuration: Duration;
-    startSound: string;
-    startSounds: string[];
-};
-
-export type BreakTimerPreference = {
-    breakDuration: Duration;
-    startSound: string;
-    startSounds: string[];
-};

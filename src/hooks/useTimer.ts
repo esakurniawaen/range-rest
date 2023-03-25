@@ -1,71 +1,91 @@
 import { useState } from 'react';
-import { useInterval, useUpdateEffect } from 'usehooks-ts';
+import { useInterval, useTimeout, useUpdateEffect } from 'usehooks-ts';
 import { convertTimeToSeconds, generateRandomNumberInRange } from '~/utils';
 import useTimerPreferenceStore from '../store/timerPreferenceStore';
 import type { TimerStatus } from '../types';
 import useAudio from './useAudio';
 
-const TICK_INTERVAL = 1000;
+const TICK = 1000;
+const DELAY_BEFORE_START_AGAIN = 2500;
 
 export default function useTimer() {
     const { taskTimerPreference, breakTimerPreference } =
         useTimerPreferenceStore();
 
-    const [timerStatus, setTimerStatus] = useState<TimerStatus>('inactive');
+    const [timerStatus, setTimerStatus] = useState<TimerStatus>('idle');
     const [taskTimeLeft, setTaskTimeLeft] = useState<number | null>(null);
     const [breakTimeLeft, setBreakTimeLeft] = useState<number | null>(null);
+    const [taskLoopCount, setTaskLoopCount] = useState(0);
+    const [breakLoopCount, setBreakLoopCount] = useState(0);
 
-    useInterval(breakTimerTick, timerStatus === 'break' ? TICK_INTERVAL : null);
-    useInterval(taskTimerTick, timerStatus === 'task' ? TICK_INTERVAL : null);
-
-    const taskStartAudio = useAudio(
-        `/audios/taskStart/${taskTimerPreference.startSound}.wav`,
+    useInterval(breakTimerTick, timerStatus === 'breakActive' ? TICK : null);
+    useInterval(taskTimerTick, timerStatus === 'taskActive' ? TICK : null);
+    useTimeout(
+        startBreakTimer,
+        timerStatus === 'taskEnd' ? DELAY_BEFORE_START_AGAIN : null,
     );
-    const breakStartAudio = useAudio(
-        `/audios/breakStart/${breakTimerPreference.startSound}.wav`,
+    useTimeout(
+        startTaskTimer,
+        timerStatus === 'breakEnd' ? DELAY_BEFORE_START_AGAIN : null,
     );
 
-    useUpdateEffect(() => {
-        if (taskTimeLeft === 0) {
-            startBreakTimer();
-        }
-    }, [taskTimeLeft]);
+    function startTaskTimer() {
+        const randomTaskDurationInSeconds = getRandomTaskDurationInSeconds();
+        if (randomTaskDurationInSeconds === null) return;
+
+        setTimerStatus('taskActive');
+        setTaskTimeLeft(10);
+        setTaskLoopCount((prevCount) => prevCount + 1);
+    }
+
+    function startBreakTimer() {
+        const breakDurationInSeconds = getBreakDurationInSeconds();
+        if (breakDurationInSeconds === null) return;
+
+        setTimerStatus('breakActive');
+        setBreakTimeLeft(breakDurationInSeconds);
+        setBreakLoopCount((prevCount) => prevCount + 1);
+    }
+
+    const taskEndAudio = useAudio(
+        `/audios/taskEnd/${taskTimerPreference.endSound}.wav`,
+    );
+    const breakEndAudio = useAudio(
+        `/audios/breakEnd/${breakTimerPreference.endSound}.wav`,
+    );
 
     function taskTimerTick() {
         setTaskTimeLeft((prevTimeLeft) =>
             typeof prevTimeLeft === 'number' ? prevTimeLeft - 1 : null,
         );
     }
-    useUpdateEffect(() => {
-        if (breakTimeLeft === 0) {
-            startTaskTimer();
-        }
-    }, [breakTimeLeft]);
-
     function breakTimerTick() {
         setBreakTimeLeft((prevTimeLeft) =>
             typeof prevTimeLeft === 'number' ? prevTimeLeft - 1 : null,
         );
     }
+    useUpdateEffect(() => {
+        if (taskTimeLeft === 0) {
+            endTaskTimer();
+        }
+    }, [taskTimeLeft]);
 
-    function startTaskTimer() {
-        const randomTaskDurationInSeconds = getRandomTaskDurationInSeconds();
+    useUpdateEffect(() => {
+        if (breakTimeLeft === 0) {
+            endBreakTimer();
+        }
+    }, [breakTimeLeft]);
 
-        if (randomTaskDurationInSeconds === null) return;
-
-        taskStartAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
-        setTimerStatus('task');
-        setTaskTimeLeft(randomTaskDurationInSeconds);
+    function endTaskTimer() {
+        taskEndAudio?.play(); /* eslint-disable-line */
+        setTimerStatus('taskEnd');
+        setTaskTimeLeft(null)
     }
 
-    function startBreakTimer() {
-        const breakDurationInSeconds = getBreakDurationInSeconds();
-
-        if (breakDurationInSeconds === null) return;
-
-        breakStartAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
-        setTimerStatus('break');
-        setBreakTimeLeft(breakDurationInSeconds);
+    function endBreakTimer() {
+        breakEndAudio?.play(); /* eslint-disable-line */
+        setTimerStatus('breakEnd');
+        setBreakTimeLeft(null)
     }
 
     function cancelTimer() {
@@ -75,7 +95,7 @@ export default function useTimer() {
         if (breakTimeLeft !== null) {
             setBreakTimeLeft(null);
         }
-        setTimerStatus('inactive');
+        setTimerStatus('idle');
     }
 
     function getRandomTaskDurationInSeconds() {
@@ -125,7 +145,9 @@ export default function useTimer() {
     }
 
     return {
-        startTimer: startTaskTimer,
+        startTimer: () => startTaskTimer(),
+        taskLoopCount,
+        breakLoopCount,
         cancelTimer,
         timerStatus,
         taskTimeLeft,

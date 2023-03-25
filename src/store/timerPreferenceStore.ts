@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { BreakTimerPreference, TaskTimerPreference } from '~/types';
+import type { Duration } from '~/types';
 
 const DEFAULT_TASK_TIMER_PREFERENCE = {
     minTaskDuration: {
@@ -13,8 +13,8 @@ const DEFAULT_TASK_TIMER_PREFERENCE = {
         minutes: 3,
         seconds: 0,
     },
-    startSound: 'attention-bell-ding',
-    startSounds: ['attention-bell-ding'],
+    endSound: 'relaxing-bell-chime',
+    endSounds: ['relaxing-bell-chime'],
 };
 
 const DEFAULT_BREAK_TIMER_PREFERENCE = {
@@ -23,8 +23,21 @@ const DEFAULT_BREAK_TIMER_PREFERENCE = {
         minutes: 0,
         seconds: 10,
     },
-    startSound: 'relaxing-bell-chime',
-    startSounds: ['relaxing-bell-chime'],
+    endSound: 'attention-bell-ding',
+    endSounds: ['attention-bell-ding'],
+};
+
+export type TaskTimerPreference = {
+    minTaskDuration: Duration;
+    maxTaskDuration: Duration;
+    endSound: string;
+    endSounds: string[];
+};
+
+export type BreakTimerPreference = {
+    breakDuration: Duration;
+    endSound: string;
+    endSounds: string[];
 };
 
 type TimerPreferenceState = {
@@ -78,7 +91,7 @@ const useTimerPreferenceStore = create(
                 })),
         }),
         {
-            name: 'timer-preference-storage', 
+            name: 'timer-preference-storage',
         },
     ),
 );

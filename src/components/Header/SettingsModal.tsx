@@ -22,8 +22,8 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
     } = useTimerPreferenceStore();
 
     usePlaySoundWhenChanged(
-        taskTimerPreference.startSound,
-        breakTimerPreference.startSound,
+        taskTimerPreference.endSound,
+        breakTimerPreference.endSound,
     );
 
     return (
@@ -58,22 +58,22 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
 
                         <SettingSelect
                             label="Sound when timer starts"
-                            options={taskTimerPreference.startSounds}
-                            selectedOption={taskTimerPreference.startSound}
+                            options={taskTimerPreference.endSounds}
+                            selectedOption={taskTimerPreference.endSound}
                             onSelectedOptionChange={(taskStartSound) =>
                                 setTaskTimerPreference(
-                                    'startSound',
+                                    'endSound',
                                     taskStartSound,
                                 )
                             }
                         />
                         <SettingSelect
                             label="Sound when break starts"
-                            options={breakTimerPreference.startSounds}
-                            selectedOption={breakTimerPreference.startSound}
+                            options={breakTimerPreference.endSounds}
+                            selectedOption={breakTimerPreference.endSound}
                             onSelectedOptionChange={(breakStartSound) =>
                                 setBreakTimerPreference(
-                                    'startSound',
+                                    'endSound',
                                     breakStartSound,
                                 )
                             }
@@ -89,17 +89,17 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
     );
 }
 
-function usePlaySoundWhenChanged(taskStartSound: string, breakStartSound: string) {
-    const taskStartAudio = useAudio(`/audios/taskStart/${taskStartSound}.wav`);
-    const breakStartAudio = useAudio(
-        `/audios/breakStart/${breakStartSound}.wav`,
+function usePlaySoundWhenChanged(taskEndSound: string, breakEndSound: string) {
+    const taskEndAudio = useAudio(`/audios/taskEnd/${taskEndSound}.wav`);
+    const breakEndAudio = useAudio(
+        `/audios/breakEnd/${breakEndSound}.wav`,
     );
 
     useUpdateEffect(() => {
-        taskStartAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
-    }, [taskStartSound]);
+        taskEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
+    }, [taskEndSound]);
 
     useUpdateEffect(() => {
-        breakStartAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
-    }, [breakStartSound]);
+        breakEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
+    }, [breakEndSound]);
 }
