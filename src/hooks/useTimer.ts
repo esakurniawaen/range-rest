@@ -34,7 +34,7 @@ export default function useTimer() {
         if (randomTaskDurationInSeconds === null) return;
 
         setTimerStatus('taskActive');
-        setTaskTimeLeft(10);
+        setTaskTimeLeft(randomTaskDurationInSeconds);
         setTaskLoopCount((prevCount) => prevCount + 1);
     }
 
