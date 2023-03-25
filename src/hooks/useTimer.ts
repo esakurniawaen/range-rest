@@ -9,8 +9,7 @@ const TICK = 1000;
 const DELAY_BEFORE_START_AGAIN = 2500;
 
 export default function useTimer() {
-    const { taskTimerPreference, breakTimerPreference } =
-        useTimerPreferenceStore();
+    const { taskPreference, breakPreference } = useTimerPreferenceStore();
 
     const [timerStatus, setTimerStatus] = useState<TimerStatus>('idle');
     const [taskTimeLeft, setTaskTimeLeft] = useState<number | null>(null);
@@ -48,10 +47,10 @@ export default function useTimer() {
     }
 
     const taskEndAudio = useAudio(
-        `/audios/taskEnd/${taskTimerPreference.endSound}.wav`,
+        `/audios/taskEnd/${taskPreference.endSound}.wav`,
     );
     const breakEndAudio = useAudio(
-        `/audios/breakEnd/${breakTimerPreference.endSound}.wav`,
+        `/audios/breakEnd/${breakPreference.endSound}.wav`,
     );
 
     function taskTimerTick() {
@@ -79,13 +78,13 @@ export default function useTimer() {
     function endTaskTimer() {
         taskEndAudio?.play(); /* eslint-disable-line */
         setTimerStatus('taskEnd');
-        setTaskTimeLeft(null)
+        setTaskTimeLeft(null);
     }
 
     function endBreakTimer() {
         breakEndAudio?.play(); /* eslint-disable-line */
         setTimerStatus('breakEnd');
-        setBreakTimeLeft(null)
+        setBreakTimeLeft(null);
     }
 
     function cancelTimer() {
@@ -99,7 +98,7 @@ export default function useTimer() {
     }
 
     function getRandomTaskDurationInSeconds() {
-        const { minTaskDuration, maxTaskDuration } = taskTimerPreference;
+        const { minTaskDuration, maxTaskDuration } = taskPreference;
 
         const minCountdownTimeInSeconds = convertTimeToSeconds(
             minTaskDuration.hours,
@@ -126,7 +125,7 @@ export default function useTimer() {
     }
 
     function getBreakDurationInSeconds() {
-        const { breakDuration } = breakTimerPreference;
+        const { breakDuration } = breakPreference;
 
         const breakDurationInSeconds = convertTimeToSeconds(
             breakDuration.hours,

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Duration } from '~/types';
 
-const DEFAULT_TASK_TIMER_PREFERENCE = {
+const DEFAULT_TASK_PREFERENCE = {
     minTaskDuration: {
         hours: 0,
         minutes: 1,
@@ -17,7 +17,7 @@ const DEFAULT_TASK_TIMER_PREFERENCE = {
     endSounds: ['relaxing-bell-chime'],
 };
 
-const DEFAULT_BREAK_TIMER_PREFERENCE = {
+const DEFAULT_BREAK_PREFERENCE = {
     breakDuration: {
         hours: 0,
         minutes: 0,
@@ -27,67 +27,67 @@ const DEFAULT_BREAK_TIMER_PREFERENCE = {
     endSounds: ['attention-bell-ding'],
 };
 
-export type TaskTimerPreference = {
+export type TaskPreference = {
     minTaskDuration: Duration;
     maxTaskDuration: Duration;
     endSound: string;
     endSounds: string[];
 };
 
-export type BreakTimerPreference = {
+export type BreakPreference = {
     breakDuration: Duration;
     endSound: string;
     endSounds: string[];
 };
 
 type TimerPreferenceState = {
-    taskTimerPreference: TaskTimerPreference;
-    breakTimerPreference: BreakTimerPreference;
+    taskPreference: TaskPreference;
+    breakPreference: BreakPreference;
 };
 
 type TimerPreferenceAction = {
-    setTaskTimerPreference: <K extends keyof TaskTimerPreference>(
+    setTaskPreference: <K extends keyof TaskPreference>(
         key: K,
-        value: TaskTimerPreference[K],
+        value: TaskPreference[K],
     ) => void;
-    setBreakTimerPreference: <K extends keyof BreakTimerPreference>(
+    setBreakPreference: <K extends keyof BreakPreference>(
         key: K,
-        value: BreakTimerPreference[K],
+        value: BreakPreference[K],
     ) => void;
-    resetTaskTimerPreference: () => void;
-    resetBreakTimerPreference: () => void;
+    resetTaskPreference: () => void;
+    resetBreakPreference: () => void;
 };
 
 const useTimerPreferenceStore = create(
     persist<TimerPreferenceState & TimerPreferenceAction>(
         (set) => ({
-            taskTimerPreference: DEFAULT_TASK_TIMER_PREFERENCE,
-            breakTimerPreference: DEFAULT_BREAK_TIMER_PREFERENCE,
-            setTaskTimerPreference: (key, value) => {
+            taskPreference: DEFAULT_TASK_PREFERENCE,
+            breakPreference: DEFAULT_BREAK_PREFERENCE,
+            setTaskPreference: (key, value) => {
                 set((state) => ({
-                    taskTimerPreference: {
-                        ...state.taskTimerPreference,
+                    taskPreference: {
+                        ...state.taskPreference,
                         [key]: value,
                     },
                 }));
             },
-            setBreakTimerPreference: (key, value) => {
+            setBreakPreference: (key, value) => {
                 set((state) => ({
-                    breakTimerPreference: {
-                        ...state.breakTimerPreference,
+                    breakPreference: {
+                        ...state.breakPreference,
                         [key]: value,
                     },
                 }));
             },
-            resetTaskTimerPreference: () =>
+            resetTaskPreference: () =>
                 set((state) => ({
                     ...state,
-                    taskTimerPreference: DEFAULT_TASK_TIMER_PREFERENCE,
+                    taskPreference: DEFAULT_TASK_PREFERENCE,
                 })),
-            resetBreakTimerPreference: () =>
+            resetBreakPreference: () =>
                 set((state) => ({
                     ...state,
-                    breakTimerPreference: DEFAULT_BREAK_TIMER_PREFERENCE,
+                    breakPreference: DEFAULT_BREAK_PREFERENCE,
                 })),
         }),
         {

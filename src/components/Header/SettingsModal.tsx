@@ -15,16 +15,13 @@ type SettingsPopupProps = { open: boolean; onClose: () => void };
 export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
     const { theme, themes, setTheme } = useTheme();
     const {
-        taskTimerPreference,
-        breakTimerPreference,
-        setTaskTimerPreference,
-        setBreakTimerPreference,
+        taskPreference,
+        breakPreference,
+        setTaskPreference,
+        setBreakPreference,
     } = useTimerPreferenceStore();
 
-    usePlaySoundWhenChanged(
-        taskTimerPreference.endSound,
-        breakTimerPreference.endSound,
-    );
+    usePlaySoundWhenChanged(taskPreference.endSound, breakPreference.endSound);
 
     return (
         <Dialog open={open} onClose={onClose}>
@@ -58,24 +55,18 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
 
                         <SettingSelect
                             label="Sound when timer ends"
-                            options={taskTimerPreference.endSounds}
-                            selectedOption={taskTimerPreference.endSound}
-                            onSelectedOptionChange={(taskStartSound) =>
-                                setTaskTimerPreference(
-                                    'endSound',
-                                    taskStartSound,
-                                )
+                            options={taskPreference.endSounds}
+                            selectedOption={taskPreference.endSound}
+                            onSelectedOptionChange={(taskEndSound) =>
+                                setTaskPreference('endSound', taskEndSound) 
                             }
                         />
                         <SettingSelect
                             label="Sound when break ends"
-                            options={breakTimerPreference.endSounds}
-                            selectedOption={breakTimerPreference.endSound}
-                            onSelectedOptionChange={(breakStartSound) =>
-                                setBreakTimerPreference(
-                                    'endSound',
-                                    breakStartSound,
-                                )
+                            options={breakPreference.endSounds}
+                            selectedOption={breakPreference.endSound}
+                            onSelectedOptionChange={(breakEndSound) =>
+                                setBreakPreference('endSound', breakEndSound)
                             }
                         />
                     </ul>
