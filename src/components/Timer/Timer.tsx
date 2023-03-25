@@ -8,26 +8,27 @@ export default function Timer() {
         startTimer,
         cancelTimer,
         timerStatus,
-        taskTimeLeft,
+        sessionTimeLeft,
         breakTimeLeft,
+        sessionLoopCount,
     } = useTimer();
 
     useUpdateEffect(() => {
-        if (process.env.NODE_ENV === 'development') {
-            console.log('Task: ', taskTimeLeft);
-        }
-    }, [taskTimeLeft]);
+        console.log('Session: ', sessionTimeLeft);
+    }, [sessionTimeLeft]);
+
     useUpdateEffect(() => {
-        if (process.env.NODE_ENV === 'development') {
-            console.log('Break: ', breakTimeLeft);
-        }
+        console.log('Break: ', breakTimeLeft);
     }, [breakTimeLeft]);
 
     return (
         <main className="px-4 md:px-6 lg:px-8">
             <section>
                 <h2 className="sr-only">Timer controller</h2>
-                <TimerDisplay timerStatus={timerStatus} />
+                <TimerDisplay
+                    sessionLoopCount={sessionLoopCount}
+                    timerStatus={timerStatus}
+                />
 
                 <div className="my-6 flex justify-center">
                     <hr className="w-4/5 border-b border-slate-200 dark:border-slate-800" />

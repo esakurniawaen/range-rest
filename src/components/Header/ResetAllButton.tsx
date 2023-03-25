@@ -4,7 +4,7 @@ import { Button } from '../buttons';
 
 export default function ResetAllButton() {
     const { setTheme } = useTheme();
-    const { resetTaskPreference, resetBreakPreference } =
+    const { resetSessionPreference, resetBreakPreference } =
         useTimerPreferenceStore();
 
     function handleResetAll() {
@@ -15,7 +15,7 @@ export default function ResetAllButton() {
         if (!isContinue) return;
 
         setTheme('system');
-        resetTaskPreference();
+        resetSessionPreference(); 
         resetBreakPreference();
     }
 

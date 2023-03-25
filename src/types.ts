@@ -3,8 +3,8 @@ export type Theme = 'system' | ResolvedTheme;
 
 export type TimerStatus =
     | 'idle'
-    | 'taskActive'
-    | 'taskEnd'
+    | 'sessionActive'
+    | 'sessionEnd'
     | 'breakActive'
     | 'breakEnd';
 
@@ -13,4 +13,3 @@ export type Duration = {
     minutes: number;
     seconds: number;
 };
-

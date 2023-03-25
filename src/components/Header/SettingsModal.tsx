@@ -15,13 +15,16 @@ type SettingsPopupProps = { open: boolean; onClose: () => void };
 export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
     const { theme, themes, setTheme } = useTheme();
     const {
-        taskPreference,
+        sessionPreference,
         breakPreference,
-        setTaskPreference,
+        setSessionPreference,
         setBreakPreference,
     } = useTimerPreferenceStore();
 
-    usePlaySoundWhenChanged(taskPreference.endSound, breakPreference.endSound);
+    usePlaySoundWhenChanged(
+        sessionPreference.endSound,
+        breakPreference.endSound,
+    );
 
     return (
         <Dialog open={open} onClose={onClose}>
@@ -55,10 +58,13 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
 
                         <SettingSelect
                             label="Sound when timer ends"
-                            options={taskPreference.endSounds}
-                            selectedOption={taskPreference.endSound}
-                            onSelectedOptionChange={(taskEndSound) =>
-                                setTaskPreference('endSound', taskEndSound) 
+                            options={sessionPreference.endSounds}
+                            selectedOption={sessionPreference.endSound}
+                            onSelectedOptionChange={(sessionEndSound) =>
+                                setSessionPreference(
+                                    'endSound',
+                                    sessionEndSound,
+                                )
                             }
                         />
                         <SettingSelect
@@ -80,13 +86,18 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
     );
 }
 
-function usePlaySoundWhenChanged(taskEndSound: string, breakEndSound: string) {
-    const taskEndAudio = useAudio(`/audios/taskEnd/${taskEndSound}.wav`);
+function usePlaySoundWhenChanged(
+    sessionEndSound: string,
+    breakEndSound: string,
+) {
+    const sessionEndAudio = useAudio(
+        `/audios/sessionEnd/${sessionEndSound}.wav`,
+    );
     const breakEndAudio = useAudio(`/audios/breakEnd/${breakEndSound}.wav`);
 
     useUpdateEffect(() => {
-        taskEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
-    }, [taskEndSound]);
+        sessionEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
+    }, [sessionEndSound]);
 
     useUpdateEffect(() => {
         breakEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */

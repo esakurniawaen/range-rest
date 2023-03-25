@@ -2,13 +2,13 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Duration } from '~/types';
 
-const DEFAULT_TASK_PREFERENCE = {
-    minTaskDuration: {
+const DEFAULT_SESSION_PREFERENCE = {
+    minSessionDuration: {
         hours: 0,
         minutes: 1,
         seconds: 0,
     },
-    maxTaskDuration: {
+    maxSessionDuration: {
         hours: 0,
         minutes: 3,
         seconds: 0,
@@ -27,9 +27,9 @@ const DEFAULT_BREAK_PREFERENCE = {
     endSounds: ['attention-bell-ding'],
 };
 
-export type TaskPreference = {
-    minTaskDuration: Duration;
-    maxTaskDuration: Duration;
+export type SessionPreference = {
+    minSessionDuration: Duration;
+    maxSessionDuration: Duration;
     endSound: string;
     endSounds: string[];
 };
@@ -41,32 +41,32 @@ export type BreakPreference = {
 };
 
 type TimerPreferenceState = {
-    taskPreference: TaskPreference;
+    sessionPreference: SessionPreference;
     breakPreference: BreakPreference;
 };
 
 type TimerPreferenceAction = {
-    setTaskPreference: <K extends keyof TaskPreference>(
+    setSessionPreference: <K extends keyof SessionPreference>(
         key: K,
-        value: TaskPreference[K],
+        value: SessionPreference[K],
     ) => void;
     setBreakPreference: <K extends keyof BreakPreference>(
         key: K,
         value: BreakPreference[K],
     ) => void;
-    resetTaskPreference: () => void;
+    resetSessionPreference: () => void;
     resetBreakPreference: () => void;
 };
 
 const useTimerPreferenceStore = create(
     persist<TimerPreferenceState & TimerPreferenceAction>(
         (set) => ({
-            taskPreference: DEFAULT_TASK_PREFERENCE,
+            sessionPreference: DEFAULT_SESSION_PREFERENCE,
             breakPreference: DEFAULT_BREAK_PREFERENCE,
-            setTaskPreference: (key, value) => {
+            setSessionPreference: (key, value) => {
                 set((state) => ({
-                    taskPreference: {
-                        ...state.taskPreference,
+                    sessionPreference: {
+                        ...state.sessionPreference,
                         [key]: value,
                     },
                 }));
@@ -79,10 +79,10 @@ const useTimerPreferenceStore = create(
                     },
                 }));
             },
-            resetTaskPreference: () =>
+            resetSessionPreference: () =>
                 set((state) => ({
                     ...state,
-                    taskPreference: DEFAULT_TASK_PREFERENCE,
+                    sessionPreference: DEFAULT_SESSION_PREFERENCE,
                 })),
             resetBreakPreference: () =>
                 set((state) => ({

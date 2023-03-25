@@ -1,40 +1,44 @@
 import { useState } from 'react';
 import { useInterval, useTimeout, useUpdateEffect } from 'usehooks-ts';
-import { convertTimeToSeconds, generateRandomNumberInRange } from '~/utils';
+import { convertDurationToSeconds, generateRandomNumberInRange } from '~/utils';
 import useTimerPreferenceStore from '../store/timerPreferenceStore';
 import type { TimerStatus } from '../types';
 import useAudio from './useAudio';
 
 const TICK = 1000;
-const DELAY_BEFORE_START_AGAIN = 2500;
+const DELAY_BEFORE_RESTART = 2500;
 
 export default function useTimer() {
-    const { taskPreference, breakPreference } = useTimerPreferenceStore();
+    const { sessionPreference, breakPreference } = useTimerPreferenceStore();
 
     const [timerStatus, setTimerStatus] = useState<TimerStatus>('idle');
-    const [taskTimeLeft, setTaskTimeLeft] = useState<number | null>(null);
+    const [sessionTimeLeft, setSessionTimeLeft] = useState<number | null>(null);
     const [breakTimeLeft, setBreakTimeLeft] = useState<number | null>(null);
-    const [taskLoopCount, setTaskLoopCount] = useState(0);
+    const [sessionLoopCount, setSessionLoopCount] = useState(0);
     const [breakLoopCount, setBreakLoopCount] = useState(0);
 
     useInterval(breakTimerTick, timerStatus === 'breakActive' ? TICK : null);
-    useInterval(taskTimerTick, timerStatus === 'taskActive' ? TICK : null);
+    useInterval(
+        sessionTimerTick,
+        timerStatus === 'sessionActive' ? TICK : null,
+    );
     useTimeout(
         startBreakTimer,
-        timerStatus === 'taskEnd' ? DELAY_BEFORE_START_AGAIN : null,
+        timerStatus === 'sessionEnd' ? DELAY_BEFORE_RESTART : null,
     );
     useTimeout(
-        startTaskTimer,
-        timerStatus === 'breakEnd' ? DELAY_BEFORE_START_AGAIN : null,
+        startSessionTimer,
+        timerStatus === 'breakEnd' ? DELAY_BEFORE_RESTART : null,
     );
 
-    function startTaskTimer() {
-        const randomTaskDurationInSeconds = getRandomTaskDurationInSeconds();
-        if (randomTaskDurationInSeconds === null) return;
+    function startSessionTimer() {
+        const randomSessionDurationInSeconds =
+            getRandomSessionDurationInSeconds();
+        if (randomSessionDurationInSeconds === null) return;
 
-        setTimerStatus('taskActive');
-        setTaskTimeLeft(randomTaskDurationInSeconds);
-        setTaskLoopCount((prevCount) => prevCount + 1);
+        setTimerStatus('sessionActive');
+        setSessionTimeLeft(randomSessionDurationInSeconds);
+        setSessionLoopCount((prevCount) => prevCount + 1);
     }
 
     function startBreakTimer() {
@@ -46,15 +50,15 @@ export default function useTimer() {
         setBreakLoopCount((prevCount) => prevCount + 1);
     }
 
-    const taskEndAudio = useAudio(
-        `/audios/taskEnd/${taskPreference.endSound}.wav`,
+    const sessionEndAudio = useAudio(
+        `/audios/sessionEnd/${sessionPreference.endSound}.wav`,
     );
     const breakEndAudio = useAudio(
         `/audios/breakEnd/${breakPreference.endSound}.wav`,
     );
 
-    function taskTimerTick() {
-        setTaskTimeLeft((prevTimeLeft) =>
+    function sessionTimerTick() {
+        setSessionTimeLeft((prevTimeLeft) =>
             typeof prevTimeLeft === 'number' ? prevTimeLeft - 1 : null,
         );
     }
@@ -64,10 +68,10 @@ export default function useTimer() {
         );
     }
     useUpdateEffect(() => {
-        if (taskTimeLeft === 0) {
-            endTaskTimer();
+        if (sessionTimeLeft === 0) {
+            endSessionTimer();
         }
-    }, [taskTimeLeft]);
+    }, [sessionTimeLeft]);
 
     useUpdateEffect(() => {
         if (breakTimeLeft === 0) {
@@ -75,21 +79,21 @@ export default function useTimer() {
         }
     }, [breakTimeLeft]);
 
-    function endTaskTimer() {
-        taskEndAudio?.play(); /* eslint-disable-line */
-        setTimerStatus('taskEnd');
-        setTaskTimeLeft(null);
+    function endSessionTimer() {
+        sessionEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
+        setTimerStatus('sessionEnd');
+        setSessionTimeLeft(null);
     }
 
     function endBreakTimer() {
-        breakEndAudio?.play(); /* eslint-disable-line */
+        breakEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
         setTimerStatus('breakEnd');
         setBreakTimeLeft(null);
     }
 
     function cancelTimer() {
-        if (taskTimeLeft !== null) {
-            setTaskTimeLeft(null);
+        if (sessionTimeLeft !== null) {
+            setSessionTimeLeft(null);
         }
         if (breakTimeLeft !== null) {
             setBreakTimeLeft(null);
@@ -97,21 +101,21 @@ export default function useTimer() {
         setTimerStatus('idle');
     }
 
-    function getRandomTaskDurationInSeconds() {
-        const { minTaskDuration, maxTaskDuration } = taskPreference;
+    function getRandomSessionDurationInSeconds() {
+        const { minSessionDuration, maxSessionDuration } = sessionPreference;
 
-        const minCountdownTimeInSeconds = convertTimeToSeconds(
-            minTaskDuration.hours,
-            minTaskDuration.minutes,
-            minTaskDuration.seconds,
+        const minCountdownTimeInSeconds = convertDurationToSeconds(
+            minSessionDuration.hours,
+            minSessionDuration.minutes,
+            minSessionDuration.seconds,
         );
-        const maxTaskDurationInSeconds = convertTimeToSeconds(
-            maxTaskDuration.hours,
-            maxTaskDuration.minutes,
-            maxTaskDuration.seconds,
+        const maxSessionDurationInSeconds = convertDurationToSeconds(
+            maxSessionDuration.hours,
+            maxSessionDuration.minutes,
+            maxSessionDuration.seconds,
         );
 
-        if (minCountdownTimeInSeconds >= maxTaskDurationInSeconds) {
+        if (minCountdownTimeInSeconds >= maxSessionDurationInSeconds) {
             window.alert(
                 'The minimum countdown-duration must be less than the maximum countdown-duration.',
             );
@@ -120,14 +124,14 @@ export default function useTimer() {
 
         return generateRandomNumberInRange(
             minCountdownTimeInSeconds,
-            maxTaskDurationInSeconds,
+            maxSessionDurationInSeconds,
         );
     }
 
     function getBreakDurationInSeconds() {
         const { breakDuration } = breakPreference;
 
-        const breakDurationInSeconds = convertTimeToSeconds(
+        const breakDurationInSeconds = convertDurationToSeconds(
             breakDuration.hours,
             breakDuration.minutes,
             breakDuration.seconds,
@@ -144,12 +148,12 @@ export default function useTimer() {
     }
 
     return {
-        startTimer: () => startTaskTimer(),
-        taskLoopCount,
+        startTimer: () => startSessionTimer(),
+        sessionLoopCount,
         breakLoopCount,
         cancelTimer,
         timerStatus,
-        taskTimeLeft,
+        sessionTimeLeft,
         breakTimeLeft,
     };
 }
