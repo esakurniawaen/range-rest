@@ -41,7 +41,7 @@ export default function useTimer(
         if (randomSessionDurationInSeconds === null) return;
 
         setTimerStatus('sessionActive');
-        setSessionTimeLeft(5);
+        setSessionTimeLeft(randomSessionDurationInSeconds);
         setSessionCount((prevCount) => prevCount + 1);
     }
 
