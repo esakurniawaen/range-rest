@@ -7,7 +7,7 @@ export default function ResetAllButton() {
     const { resetSessionPreference, resetBreakPreference } =
         useTimerPreferenceStore();
 
-    function handleResetAll() {
+    function handleResetEverything() {
         const isContinue = window.confirm(
             "Do you want to reset everything? (that's includes, min countdown, max countdown, break duration, theme, sound when timer starts and ends)",
         );
@@ -24,7 +24,7 @@ export default function ResetAllButton() {
             variant="outlined"
             color="error"
             size="small"
-            onClick={handleResetAll}
+            onClick={handleResetEverything}
             whenClickScaleDown
         >
             Reset all
