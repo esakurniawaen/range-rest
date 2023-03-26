@@ -11,6 +11,7 @@ const config = {
         extend: {
             animation: {
                 'reverse-spin': 'reverse-spin 1s linear infinite',
+             'loading-dots': ''
             },
             keyframes: {
                 'reverse-spin': {

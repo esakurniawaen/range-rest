@@ -1,21 +1,25 @@
 import { useState } from 'react';
 import { useInterval, useTimeout, useUpdateEffect } from 'usehooks-ts';
+import type {
+    BreakPreference,
+    SessionPreference,
+} from '~/store/timerPreferenceStore';
 import { convertDurationToSeconds, generateRandomNumberInRange } from '~/utils';
-import useTimerPreferenceStore from '../store/timerPreferenceStore';
 import type { TimerStatus } from '../types';
 import useAudio from './useAudio';
 
 const TICK = 1000;
-const DELAY_BEFORE_RESTART = 2500;
+const DELAY_BEFORE_RESTART = 2000;
 
-export default function useTimer() {
-    const { sessionPreference, breakPreference } = useTimerPreferenceStore();
-
+export default function useTimer(
+    sessionPreference: SessionPreference,
+    breakPreference: BreakPreference,
+) {
     const [timerStatus, setTimerStatus] = useState<TimerStatus>('idle');
     const [sessionTimeLeft, setSessionTimeLeft] = useState<number | null>(null);
     const [breakTimeLeft, setBreakTimeLeft] = useState<number | null>(null);
-    const [sessionLoopCount, setSessionLoopCount] = useState(0);
-    const [breakLoopCount, setBreakLoopCount] = useState(0);
+    const [sessionCount, setSessionCount] = useState(0);
+    const [breakCount, setBreakCount] = useState(0);
 
     useInterval(breakTimerTick, timerStatus === 'breakActive' ? TICK : null);
     useInterval(
@@ -37,8 +41,8 @@ export default function useTimer() {
         if (randomSessionDurationInSeconds === null) return;
 
         setTimerStatus('sessionActive');
-        setSessionTimeLeft(randomSessionDurationInSeconds);
-        setSessionLoopCount((prevCount) => prevCount + 1);
+        setSessionTimeLeft(5);
+        setSessionCount((prevCount) => prevCount + 1);
     }
 
     function startBreakTimer() {
@@ -47,7 +51,7 @@ export default function useTimer() {
 
         setTimerStatus('breakActive');
         setBreakTimeLeft(breakDurationInSeconds);
-        setBreakLoopCount((prevCount) => prevCount + 1);
+        setBreakCount((prevCount) => prevCount + 1);
     }
 
     const sessionEndAudio = useAudio(
@@ -149,8 +153,8 @@ export default function useTimer() {
 
     return {
         startTimer: () => startSessionTimer(),
-        sessionLoopCount,
-        breakLoopCount,
+        sessionCount,
+        breakCount,
         cancelTimer,
         timerStatus,
         sessionTimeLeft,

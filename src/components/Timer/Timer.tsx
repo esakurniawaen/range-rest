@@ -1,17 +1,19 @@
 import { useUpdateEffect } from 'usehooks-ts';
 import useTimer from '~/hooks/useTimer';
+import useTimerPreferenceStore from '~/store/timerPreferenceStore';
 import TimerButton from './TimerButton';
 import TimerDisplay from './TimerDisplay';
 
 export default function Timer() {
+    const { sessionPreference, breakPreference } = useTimerPreferenceStore();
     const {
         startTimer,
         cancelTimer,
         timerStatus,
         sessionTimeLeft,
         breakTimeLeft,
-        sessionLoopCount,
-    } = useTimer();
+        sessionCount,
+    } = useTimer(sessionPreference, breakPreference);
 
     useUpdateEffect(() => {
         console.log('Session: ', sessionTimeLeft);
@@ -26,7 +28,7 @@ export default function Timer() {
             <section>
                 <h2 className="sr-only">Timer controller</h2>
                 <TimerDisplay
-                    sessionLoopCount={sessionLoopCount}
+                    sessionCount={sessionCount}
                     timerStatus={timerStatus}
                 />
 
