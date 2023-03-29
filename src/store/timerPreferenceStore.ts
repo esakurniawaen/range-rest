@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Duration } from '~/types';
 
-const DEFAULT_SESSION_PREFERENCE = {
+export const DEFAULT_SESSION_PREFERENCE = {
     minSessionDuration: {
         hours: 0,
         minutes: 1,
@@ -17,7 +16,7 @@ const DEFAULT_SESSION_PREFERENCE = {
     endSounds: ['relaxing-bell-chime'],
 };
 
-const DEFAULT_BREAK_PREFERENCE = {
+export const DEFAULT_BREAK_PREFERENCE = {
     breakDuration: {
         hours: 0,
         minutes: 0,
@@ -25,6 +24,12 @@ const DEFAULT_BREAK_PREFERENCE = {
     },
     endSound: 'attention-bell-ding',
     endSounds: ['attention-bell-ding'],
+};
+
+export type Duration = {
+    hours: number;
+    minutes: number;
+    seconds: number;
 };
 
 export type SessionPreference = {

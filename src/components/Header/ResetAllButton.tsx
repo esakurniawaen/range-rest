@@ -1,4 +1,4 @@
-import { useTheme } from 'next-themes';
+import useTheme from '~/hooks/useTheme';
 import useTimerPreferenceStore from '~/store/timerPreferenceStore';
 import { Button } from '../buttons';
 
@@ -15,7 +15,7 @@ export default function ResetAllButton() {
         if (!isContinue) return;
 
         setTheme('system');
-        resetSessionPreference(); 
+        resetSessionPreference();
         resetBreakPreference();
     }
 

@@ -5,11 +5,17 @@ import type {
     SessionPreference,
 } from '~/store/timerPreferenceStore';
 import { convertDurationToSeconds, generateRandomNumberInRange } from '~/utils';
-import type { TimerStatus } from '../types';
 import useAudio from './useAudio';
 
+export type TimerStatus =
+    | 'idle'
+    | 'sessionActive'
+    | 'sessionEnd'
+    | 'breakActive'
+    | 'breakEnd';
+
 const TICK = 1000;
-const DELAY_BEFORE_RESTART = 2000;
+const DELAY_BEFORE_RESTART = 1000;
 
 export default function useTimer(
     sessionPreference: SessionPreference,

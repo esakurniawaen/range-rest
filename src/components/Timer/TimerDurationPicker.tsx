@@ -1,7 +1,7 @@
 import { Popover } from '@headlessui/react';
 import clsx from 'clsx';
 import { forwardRef, Fragment } from 'react';
-import type { Duration } from '~/types';
+import type { Duration } from '~/store/timerPreferenceStore';
 import ExtraInformation from '../ExtraInformation';
 
 interface TimerDurationPickerProps {

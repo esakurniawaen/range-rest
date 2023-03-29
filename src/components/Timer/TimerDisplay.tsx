@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import useTimerPreferenceStore from '~/store/timerPreferenceStore';
-import type { TimerStatus } from '~/types';
+import type { TimerStatus } from '~/hooks/useTimer';
 import { convertRegularNumberToOrdinal } from '~/utils';
 import ClientOnly from '../ClientOnly';
 import TimerDurationPicker from './TimerDurationPicker';

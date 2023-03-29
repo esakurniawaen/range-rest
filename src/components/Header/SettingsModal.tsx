@@ -1,6 +1,6 @@
 import { Dialog } from '@headlessui/react';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { useTheme } from 'next-themes';
+import useTheme, { type Theme } from '~/hooks/useTheme';
 import { Fragment } from 'react';
 import { useUpdateEffect } from 'usehooks-ts';
 import useAudio from '~/hooks/useAudio';
@@ -49,7 +49,7 @@ export default function SettingsPopup({ open, onClose }: SettingsPopupProps) {
                             <SettingSelect
                                 label="Theme"
                                 options={themes}
-                                selectedOption={theme as string}
+                                selectedOption={theme as Theme}
                                 onSelectedOptionChange={(nextTheme) =>
                                     setTheme(nextTheme)
                                 }

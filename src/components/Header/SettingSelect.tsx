@@ -2,7 +2,7 @@ import { Listbox } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { Fragment } from 'react';
-import type { Theme } from '~/types';
+import type { Theme } from '~/hooks/useTheme';
 import { capitalizeFirstWord } from '~/utils';
 import ExtraInformation from '../ExtraInformation';
 
