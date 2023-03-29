@@ -15,7 +15,6 @@ export type TimerStatus =
     | 'breakEnd';
 
 const TICK = 1000;
-const DELAY_BEFORE_RESTART = 1000;
 
 export default function useTimer(
     sessionPreference: SessionPreference,
@@ -26,6 +25,8 @@ export default function useTimer(
     const [breakTimeLeft, setBreakTimeLeft] = useState<number | null>(null);
     const [sessionCount, setSessionCount] = useState(0);
     const [breakCount, setBreakCount] = useState(0);
+    const [sessionRestartDelay, setSessionRestartDelay] = useState(0);
+    const [breakRestartDelay, setBreakRestartDelay] = useState(0);
 
     useInterval(breakTimerTick, timerStatus === 'breakActive' ? TICK : null);
     useInterval(
@@ -34,11 +35,11 @@ export default function useTimer(
     );
     useTimeout(
         startBreakTimer,
-        timerStatus === 'sessionEnd' ? DELAY_BEFORE_RESTART : null,
+        timerStatus === 'sessionEnd' ? breakRestartDelay : null,
     );
     useTimeout(
         startSessionTimer,
-        timerStatus === 'breakEnd' ? DELAY_BEFORE_RESTART : null,
+        timerStatus === 'breakEnd' ? sessionRestartDelay : null,
     );
 
     function startSessionTimer() {
@@ -91,29 +92,25 @@ export default function useTimer(
 
     function endSessionTimer() {
         sessionEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
+        setBreakRestartDelay(sessionEndAudio?.duration ?? 0);
         setTimerStatus('sessionEnd');
         setSessionTimeLeft(null);
     }
 
     function endBreakTimer() {
         breakEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
+        setSessionRestartDelay(breakEndAudio?.duration ?? 0);
         setTimerStatus('breakEnd');
         setBreakTimeLeft(null);
     }
 
     function cancelTimer() {
-        if (sessionTimeLeft !== null) {
-            setSessionTimeLeft(null);
-        }
-        if (breakTimeLeft !== null) {
-            setBreakTimeLeft(null);
-        }
-        if (sessionCount !== 0) {
-            setSessionCount(0);
-        }
-        if (breakCount !== 0) {
-            setBreakCount(0);
-        }
+        setSessionTimeLeft(null);
+        setBreakTimeLeft(null);
+        setSessionCount(0);
+        setBreakCount(0);
+        setBreakRestartDelay(0);
+        setSessionRestartDelay(0);
         setTimerStatus('idle');
     }
 
