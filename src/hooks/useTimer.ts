@@ -102,6 +102,12 @@ export default function useTimer(
         if (breakTimeLeft !== null) {
             setBreakTimeLeft(null);
         }
+        if (sessionCount !== 0) {
+            setSessionCount(0);
+        }
+        if (breakCount !== 0) {
+            setBreakCount(0);
+        }
         setTimerStatus('idle');
     }
 
@@ -153,11 +159,11 @@ export default function useTimer(
 
     return {
         startTimer: () => startSessionTimer(),
-        sessionCount,
-        breakCount,
-        cancelTimer,
         timerStatus,
         sessionTimeLeft,
+        sessionCount,
         breakTimeLeft,
+        breakCount,
+        cancelTimer,
     };
 }
