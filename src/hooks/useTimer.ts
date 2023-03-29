@@ -91,15 +91,23 @@ export default function useTimer(
     }, [breakTimeLeft]);
 
     function endSessionTimer() {
-        sessionEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
-        setBreakRestartDelay(sessionEndAudio?.duration ?? 0);
+        if (sessionEndAudio) {
+            sessionEndAudio.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
+            setBreakRestartDelay(
+                parseFloat(sessionEndAudio.duration.toFixed(2)) * 1000,
+            );
+        }
         setTimerStatus('sessionEnd');
         setSessionTimeLeft(null);
     }
 
     function endBreakTimer() {
-        breakEndAudio?.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
-        setSessionRestartDelay(breakEndAudio?.duration ?? 0);
+        if (breakEndAudio) {
+            breakEndAudio.play(); /* eslint-disable-line @typescript-eslint/no-floating-promises */
+            setSessionRestartDelay(
+                parseFloat(breakEndAudio.duration.toFixed(2)) * 1000,
+            );
+        }
         setTimerStatus('breakEnd');
         setBreakTimeLeft(null);
     }

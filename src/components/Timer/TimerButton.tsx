@@ -1,4 +1,4 @@
-import type { TimerStatus } from '~/types';
+import type { TimerStatus } from '~/hooks/useTimer';
 import { Button } from '../buttons';
 
 type TimerButtonProps = {
@@ -14,8 +14,8 @@ export default function TimerButton({
 }: TimerButtonProps) {
     return (
         <Button
-            width='full'
-            color={timerStatus === 'idle' ? 'success' : 'error'} 
+            width="full"
+            color={timerStatus === 'idle' ? 'success' : 'error'}
             onClick={timerStatus === 'idle' ? onTimerStart : onTimerCancel}
             variant={timerStatus === 'idle' ? 'filled' : 'outlined'}
         >
