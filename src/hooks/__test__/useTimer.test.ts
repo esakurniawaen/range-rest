@@ -6,7 +6,7 @@ import {
 import useTimer from '../useTimer';
 
 describe('useTimer', () => {
-    it('should start the timer at a random duration', () => {
+    it('should start the timer at a random duration in seconds', () => {
         const { result } = renderHook(() =>
             useTimer(DEFAULT_SESSION_PREFERENCE, DEFAULT_BREAK_PREFERENCE),
         );
@@ -18,6 +18,7 @@ describe('useTimer', () => {
         expect(result.current.sessionTimeLeft).not.toBe(
             previousSessionTimeLeft,
         );
+        expect(typeof result.current.sessionTimeLeft).toBe('number');
     });
 
     it('should change the timerStatus to sessionActive when the timer started', () => {
@@ -29,15 +30,7 @@ describe('useTimer', () => {
         expect(result.current.timerStatus).toBe('sessionActive');
     });
 
-    it('should return a number for the timer time left', () => {
-        const { result } = renderHook(() =>
-            useTimer(DEFAULT_SESSION_PREFERENCE, DEFAULT_BREAK_PREFERENCE),
-        );
-        act(() => result.current.startTimer());
-        expect(typeof result.current.sessionTimeLeft).toBe('number');
-    });
-
-    it('should be in initial value when the page loaded', () => {
+    it('should be in the initial values when the timer first loaded', () => {
         const { result } = renderHook(() =>
             useTimer(DEFAULT_SESSION_PREFERENCE, DEFAULT_BREAK_PREFERENCE),
         );
@@ -48,7 +41,7 @@ describe('useTimer', () => {
         expect(result.current.breakCount).toBe(0);
     });
 
-    it('should reset all properties to its initial value when the timer is canceled', () => {
+    it('should reset all timer values to its initial value when the timer is canceled', () => {
         const { result } = renderHook(() =>
             useTimer(DEFAULT_SESSION_PREFERENCE, DEFAULT_BREAK_PREFERENCE),
         );
