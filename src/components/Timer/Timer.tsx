@@ -1,4 +1,5 @@
 import { useUpdateEffect } from 'usehooks-ts';
+import useCurrentTime from '~/hooks/useCurrentTime';
 import useTimer from '~/hooks/useTimer';
 import useTimerPreferenceStore from '~/store/timerPreferenceStore';
 import TimerButton from './TimerButton';
@@ -15,12 +16,22 @@ export default function Timer() {
         sessionCount,
     } = useTimer(sessionPreference, breakPreference);
 
+    const currentTime = useCurrentTime();
+
     useUpdateEffect(() => {
-        console.log('Session: ', sessionTimeLeft);
+        console.log(
+            `Session countdown: ${
+                sessionTimeLeft ?? 'End'
+            } at ${currentTime} o'clock`,
+        );
     }, [sessionTimeLeft]);
 
     useUpdateEffect(() => {
-        console.log('Break: ', breakTimeLeft);
+        console.log(
+            `Break countdown: ${
+                breakTimeLeft ?? 'End'
+            } at ${currentTime} o'clock`,
+        );
     }, [breakTimeLeft]);
 
     return (
