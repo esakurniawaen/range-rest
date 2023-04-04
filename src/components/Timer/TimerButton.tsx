@@ -15,11 +15,11 @@ export default function TimerButton({
     return (
         <Button
             width="full"
-            color={timerStatus === 'idle' ? 'success' : 'error'}
-            onClick={timerStatus === 'idle' ? onTimerStart : onTimerCancel}
-            variant={timerStatus === 'idle' ? 'filled' : 'outlined'}
+            color={timerStatus === 'Idle' ? 'success' : 'error'}
+            onClick={timerStatus === 'Idle' ? onTimerStart : onTimerCancel}
+            variant={timerStatus === 'Idle' ? 'filled' : 'outlined'}
         >
-            {timerStatus === 'idle' ? 'Start' : 'Cancel'}
+            {timerStatus === 'Idle' ? 'Start' : 'Cancel'}
         </Button>
     );
 }

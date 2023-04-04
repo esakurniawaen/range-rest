@@ -4,15 +4,20 @@ import type {
     BreakPreference,
     SessionPreference,
 } from '~/store/timerPreferenceStore';
-import { convertDurationToSeconds, generateRandomNumberInRange } from '~/utils';
+import {
+    convertDurationToSeconds,
+    generateRandomNumberInRange,
+    getErrorMessage,
+} from '~/utils';
+
 import useAudio from './useAudio';
 
 export type TimerStatus =
-    | 'idle'
-    | 'sessionActive'
-    | 'sessionEnd'
-    | 'breakActive'
-    | 'breakEnd';
+    | 'Idle'
+    | 'SessionActive'
+    | 'SessionEnd'
+    | 'BreakActive'
+    | 'BreakEnd';
 
 const TICK = 1000;
 
@@ -20,7 +25,7 @@ export default function useTimer(
     sessionPreference: SessionPreference,
     breakPreference: BreakPreference,
 ) {
-    const [timerStatus, setTimerStatus] = useState<TimerStatus>('idle');
+    const [timerStatus, setTimerStatus] = useState<TimerStatus>('Idle');
     const [sessionTimeLeft, setSessionTimeLeft] = useState<number | null>(null);
     const [breakTimeLeft, setBreakTimeLeft] = useState<number | null>(null);
     const [sessionCount, setSessionCount] = useState(0);
@@ -28,37 +33,41 @@ export default function useTimer(
     const [sessionRestartDelay, setSessionRestartDelay] = useState(0);
     const [breakRestartDelay, setBreakRestartDelay] = useState(0);
 
-    useInterval(breakTimerTick, timerStatus === 'breakActive' ? TICK : null);
+    useInterval(breakTimerTick, timerStatus === 'BreakActive' ? TICK : null);
     useInterval(
         sessionTimerTick,
-        timerStatus === 'sessionActive' ? TICK : null,
+        timerStatus === 'SessionActive' ? TICK : null,
     );
     useTimeout(
         startBreakTimer,
-        timerStatus === 'sessionEnd' ? breakRestartDelay : null,
+        timerStatus === 'SessionEnd' ? breakRestartDelay : null,
     );
     useTimeout(
         startSessionTimer,
-        timerStatus === 'breakEnd' ? sessionRestartDelay : null,
+        timerStatus === 'BreakEnd' ? sessionRestartDelay : null,
     );
 
     function startSessionTimer() {
-        const randomSessionDurationInSeconds =
-            getRandomSessionDurationInSeconds();
-        if (randomSessionDurationInSeconds === null) return;
-
-        setTimerStatus('sessionActive');
-        setSessionTimeLeft(randomSessionDurationInSeconds);
-        setSessionCount((prevCount) => prevCount + 1);
+        try {
+            const randomSessionDurationInSeconds =
+                getRandomSessionDurationInSeconds();
+            setSessionTimeLeft(randomSessionDurationInSeconds);
+            setTimerStatus('SessionActive');
+            setSessionCount((prevCount) => prevCount + 1);
+        } catch (err) {
+            alert(getErrorMessage(err));
+        }
     }
 
     function startBreakTimer() {
-        const breakDurationInSeconds = getBreakDurationInSeconds();
-        if (breakDurationInSeconds === null) return;
-
-        setTimerStatus('breakActive');
-        setBreakTimeLeft(breakDurationInSeconds);
-        setBreakCount((prevCount) => prevCount + 1);
+        try {
+            const breakDurationInSeconds = getBreakDurationInSeconds();
+            setBreakTimeLeft(breakDurationInSeconds);
+            setTimerStatus('BreakActive');
+            setBreakCount((prevCount) => prevCount + 1);
+        } catch (err) {
+            alert(getErrorMessage(err));
+        }
     }
 
     const sessionEndAudio = useAudio(
@@ -97,7 +106,7 @@ export default function useTimer(
                 parseFloat(sessionEndAudio.duration.toFixed(2)) * 1000,
             );
         }
-        setTimerStatus('sessionEnd');
+        setTimerStatus('SessionEnd');
         setSessionTimeLeft(null);
     }
 
@@ -108,7 +117,7 @@ export default function useTimer(
                 parseFloat(breakEndAudio.duration.toFixed(2)) * 1000,
             );
         }
-        setTimerStatus('breakEnd');
+        setTimerStatus('BreakEnd');
         setBreakTimeLeft(null);
     }
 
@@ -119,10 +128,10 @@ export default function useTimer(
         setBreakCount(0);
         setBreakRestartDelay(0);
         setSessionRestartDelay(0);
-        setTimerStatus('idle');
+        setTimerStatus('Idle');
     }
 
-    function getRandomSessionDurationInSeconds() {
+    function getRandomSessionDurationInSeconds(): number | never {
         const { minSessionDuration, maxSessionDuration } = sessionPreference;
 
         const minCountdownTimeInSeconds = convertDurationToSeconds(
@@ -137,10 +146,9 @@ export default function useTimer(
         );
 
         if (minCountdownTimeInSeconds >= maxSessionDurationInSeconds) {
-            window.alert(
-                'The minimum countdown-duration must be less than the maximum countdown-duration.',
+            throw new Error(
+                'The minimum duration must be less than the maximum duration',
             );
-            return null;
         }
 
         return generateRandomNumberInRange(
@@ -149,7 +157,7 @@ export default function useTimer(
         );
     }
 
-    function getBreakDurationInSeconds() {
+    function getBreakDurationInSeconds(): number | never {
         const { breakDuration } = breakPreference;
 
         const breakDurationInSeconds = convertDurationToSeconds(
@@ -159,10 +167,9 @@ export default function useTimer(
         );
 
         if (breakDurationInSeconds === 0) {
-            window.alert(
-                'The minimum break duration must be at least 1 second.',
+            throw new Error(
+                'The minimum break duration must be at least 1 second',
             );
-            return null;
         }
 
         return breakDurationInSeconds;

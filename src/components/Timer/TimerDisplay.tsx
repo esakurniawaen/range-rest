@@ -23,7 +23,7 @@ export default function TimerDisplay({
 
     return (
         <ClientOnly as={Fragment}>
-            {timerStatus === 'idle' ? (
+            {timerStatus === 'Idle' ? (
                 <div className="grid gap-y-3">
                     <TimerDurationPicker
                         label="Minimum"
@@ -58,7 +58,7 @@ export default function TimerDisplay({
                 </div>
             ) : (
                 <div className="flex h-[180px] flex-col items-center justify-center gap-y-3">
-                    {timerStatus === 'sessionActive' && (
+                    {timerStatus === 'SessionActive' && (
                         <Fragment>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -76,12 +76,12 @@ export default function TimerDisplay({
                                     {convertRegularNumberToOrdinal(
                                         sessionCount,
                                     )}{' '}
-                                    Loop.
+                                    Loop
                                 </span>
                             </div>
                         </Fragment>
                     )}
-                    {timerStatus === 'breakActive' && (
+                    {timerStatus === 'BreakActive' && (
                         <Fragment>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -96,12 +96,12 @@ export default function TimerDisplay({
                             </span>
                         </Fragment>
                     )}
-                    {timerStatus === 'sessionEnd' && (
+                    {timerStatus === 'SessionEnd' && (
                         <span className="animate-bounce text-lg font-semibold text-purple-500 dark:text-purple-400">
                             Starting a break
                         </span>
                     )}
-                    {timerStatus === 'breakEnd' && (
+                    {timerStatus === 'BreakEnd' && (
                         <span className="animate-bounce text-lg font-semibold text-orange-500 dark:text-orange-400">
                             Starting a timer
                         </span>
