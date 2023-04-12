@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useUpdateEffect, useInterval, useTimeout } from 'usehooks-ts';
+import { useUpdateEffect } from 'usehooks-ts';
 import useWebWorkerInterval from './useWebWorkerInterval';
 import useWebWorkerTimeout from './useWebWorkerTimeout';
 import type {
@@ -21,7 +21,7 @@ export type TimerStatus =
     | 'BreakActive'
     | 'BreakEnd';
 
-const TICK = 100;
+const TICK = 1000;
 
 export default function useTimer(
     sessionPreference: SessionPreference,
