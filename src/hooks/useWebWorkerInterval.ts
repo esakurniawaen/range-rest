@@ -18,10 +18,8 @@ function useWebWorkerInterval(callback: () => void, delay: number | null) {
             return;
         }
 
-        // eslint-disable-next-line
         const id = setInterval(() => savedCallback.current(), delay);
 
-        // eslint-disable-next-line
         return () => clearInterval(id);
     }, [delay]);
 }
