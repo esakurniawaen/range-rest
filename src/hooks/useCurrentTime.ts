@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useInterval } from 'usehooks-ts';
+import useWorkerInterval from './useWorkerInterval';
 
 type Time = `${string}:${string}:${string}`;
 
@@ -20,7 +20,7 @@ export default function useCurrentTime() {
         setCurrentTime(time);
     }
 
-    useInterval(updateCurrentTime, 1000);
+    useWorkerInterval(updateCurrentTime, 1000);
 
     return currentTime;
 }
