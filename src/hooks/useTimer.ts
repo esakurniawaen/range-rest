@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useUpdateEffect } from 'usehooks-ts';
-import useWebWorkerInterval from './useWebWorkerInterval';
-import useWebWorkerTimeout from './useWebWorkerTimeout';
+import useWorkerInterval from './useWorkerInterval';
+import useWorkerTimeout from './useWorkerTimeout';
 import type {
     BreakPreference,
     SessionPreference,
@@ -35,19 +35,19 @@ export default function useTimer(
     const [sessionRestartDelay, setSessionRestartDelay] = useState(0);
     const [breakRestartDelay, setBreakRestartDelay] = useState(0);
 
-    useWebWorkerInterval(
+    useWorkerInterval(
         breakTimerTick,
         timerStatus === 'BreakActive' ? TICK : null,
     );
-    useWebWorkerInterval(
+    useWorkerInterval(
         sessionTimerTick,
         timerStatus === 'SessionActive' ? TICK : null,
     );
-    useWebWorkerTimeout(
+    useWorkerTimeout(
         startBreakTimer,
         timerStatus === 'SessionEnd' ? breakRestartDelay : null,
     );
-    useWebWorkerTimeout(
+    useWorkerTimeout(
         startSessionTimer,
         timerStatus === 'BreakEnd' ? sessionRestartDelay : null,
     );

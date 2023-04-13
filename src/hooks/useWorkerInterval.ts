@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react';
-import { clearInterval, setInterval } from 'worker-timers';
+import {
+    clearInterval as clearWorkerInterval,
+    setInterval as setWorkerInterval,
+} from 'worker-timers';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
-function useWebWorkerInterval(callback: () => void, delay: number | null) {
+function useWorkerInterval(callback: () => void, delay: number | null) {
     const savedCallback = useRef(callback);
 
     // Remember the latest callback if it changes.
@@ -18,10 +21,10 @@ function useWebWorkerInterval(callback: () => void, delay: number | null) {
             return;
         }
 
-        const id = setInterval(() => savedCallback.current(), delay);
+        const id = setWorkerInterval(() => savedCallback.current(), delay);
 
-        return () => clearInterval(id);
+        return () => clearWorkerInterval(id);
     }, [delay]);
 }
 
-export default useWebWorkerInterval;
+export default useWorkerInterval;
